@@ -1,3 +1,12 @@
+# This Script Generates 3 SQL files from the included data.csv file
+# Run with no parameters.
+# 
+# To Load SQL into mysql
+# mysql> source init.sql
+# mysql> source courses.sql
+# mysql> source offerings.sql
+# mysql> source offering_days.sql
+
 require 'csv'
 require 'set'
 
