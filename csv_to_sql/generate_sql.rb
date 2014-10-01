@@ -1,6 +1,6 @@
 # This Script Generates 3 SQL files from the included data.csv file
 # Run with no parameters.
-# 
+#
 # To Load SQL into mysql
 # mysql> source init.sql
 # mysql> source courses.sql
@@ -35,10 +35,10 @@ def compound_code(csv_row)
 end
 
 # Generate courses SQL
-File.open('courses.sql', 'w') { |file| 
+File.open('courses.sql', 'w') { |file|
 	codes = Set.new
 	file.write("DELETE FROM courses;\n")
-	CSV.foreach('data.csv', {:col_sep => ';', :headers=>:first_row}) do |row|
+	CSV.foreach('data.csv', {:col_sep => ';', :headers=>:first_row, :encoding => 'windows-1251:utf-8' }) do |row|
 		if not codes.include? compound_code row
 			codes.add compound_code row
 			file.write(COURSES_TEMPLATE % [row[DEPT], row[CODE], row[NAME]])
@@ -48,9 +48,9 @@ File.open('courses.sql', 'w') { |file|
 }
 
 # Generate offerings SQL
-File.open('offerings.sql', 'w') { |file| 
+File.open('offerings.sql', 'w') { |file|
 	file.write("DELETE FROM offerings;\n")
-	CSV.foreach('data.csv', {:col_sep => ';', :headers=>:first_row}) do |row|
+	CSV.foreach('data.csv', {:col_sep => ';', :headers=>:first_row, :encoding => 'windows-1251:utf-8'}) do |row|
 		course_search = search_course_statement row
 		time_start = row[TIME_START].nil? ? "NULL" : "TIME_FORMAT(#{row[TIME_START]}, '%H%i')"
 		time_end = row[TIME_END].nil? ? "NULL" : "TIME_FORMAT(#{row[TIME_END]}, '%H%i')"
@@ -61,9 +61,9 @@ File.open('offerings.sql', 'w') { |file|
 }
 
 # Generate offering_days SQL
-File.open('offering_days.sql', 'w') { |file| 
+File.open('offering_days.sql', 'w') { |file|
 	file.write("DELETE FROM offering_days;\n")
-	CSV.foreach('data.csv', {:col_sep => ';', :headers=>:first_row}) do |row|
+	CSV.foreach('data.csv', {:col_sep => ';', :headers=>:first_row, :encoding => 'windows-1251:utf-8'}) do |row|
 		course_search = search_course_statement row
 		days = row[DAYS]
 		if not days.nil?
