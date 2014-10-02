@@ -16,6 +16,7 @@ OFFERINGS_TEMPLATE =
 	'INSERT INTO offerings (course, type, time_start, time_end, capacity)'\
 	' VALUES (%s, "%s", %s, %s, %s);'
 
+# data.csv indexes
 DEPT = 0
 CODE = 1
 SECTION = 2
@@ -27,7 +28,7 @@ TIME_END = 7
 CAPACITY = 8
 
 def search_course_statement(csv_row)
-	return  "(SELECT id from courses WHERE dept = \"#{csv_row[DEPT]}\" AND code = #{csv_row[CODE]})"
+	return "(SELECT id from courses WHERE dept = \"#{csv_row[DEPT]}\" AND code = #{csv_row[CODE]})"
 end
 
 def compound_code(csv_row)
