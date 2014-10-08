@@ -5,7 +5,6 @@
 # mysql> source init.sql
 # mysql> source courses.sql
 # mysql> source offerings.sql
-# mysql> source offering_days.sql
 
 require 'csv'
 require 'set'
@@ -13,8 +12,8 @@ require 'set'
 COURSES_TEMPLATE =
 	'INSERT INTO courses (dept, code, name) VALUES ("%s", %s, "%s");'
 OFFERINGS_TEMPLATE =
-	'INSERT INTO offerings (course, type, time_start, time_end, capacity)'\
-	' VALUES (%s, "%s", %s, %s, %s);'
+	'INSERT INTO offerings (course, type, time_start, time_end, capacity, days)'\
+	' VALUES (%s, "%s", %s, %s, %s, "%s");'
 
 # data.csv indexes
 DEPT = 0
@@ -53,25 +52,12 @@ File.open('offerings.sql', 'w') { |file|
 	file.write("DELETE FROM offerings;\n")
 	CSV.foreach('data.csv', {:col_sep => ';', :headers=>:first_row, :encoding => 'windows-1251:utf-8'}) do |row|
 		course_search = search_course_statement row
-		time_start = row[TIME_START].nil? ? "NULL" : "TIME_FORMAT(#{row[TIME_START]}, '%H%i')"
-		time_end = row[TIME_END].nil? ? "NULL" : "TIME_FORMAT(#{row[TIME_END]}, '%H%i')"
+		time_start_str = row[TIME_START] ? ("%04d" % row[TIME_START]).scan(/../).join(":") : nil
+		time_end_str = row[TIME_END] ? ("%04d" % row[TIME_END]).scan(/../).join(":") : nil
+		time_start = row[TIME_START].nil? ? "NULL" : "TIME_FORMAT(\"#{time_start_str}\", '%H:%i')"
+		time_end = row[TIME_END].nil? ? "NULL" : "TIME_FORMAT(\"#{time_end_str}\", '%H:%i')"
 		capacity = row[CAPACITY].nil? ? "NULL" : row[CAPACITY]
-		file.write(OFFERINGS_TEMPLATE % [course_search, row[TYPE], time_start, time_end, capacity])
+		file.write(OFFERINGS_TEMPLATE % [course_search, row[TYPE], time_start, time_end, capacity, row[DAYS]])
 		file.write("\n")
-	end
-}
-
-# Generate offering_days SQL
-File.open('offering_days.sql', 'w') { |file|
-	file.write("DELETE FROM offering_days;\n")
-	CSV.foreach('data.csv', {:col_sep => ';', :headers=>:first_row, :encoding => 'windows-1251:utf-8'}) do |row|
-		course_search = search_course_statement row
-		days = row[DAYS]
-		if not days.nil?
-			row[DAYS].each_char do |day|
-				file.write("INSERT INTO offering_days (course, day) VALUES (#{course_search}, \"#{day}\");")
-				file.write("\n")
-			end
-		end
 	end
 }
