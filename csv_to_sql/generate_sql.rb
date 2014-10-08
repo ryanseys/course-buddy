@@ -37,7 +37,7 @@ end
 # Generate courses SQL
 File.open('courses.sql', 'w') { |file|
 	codes = Set.new
-	file.write("DELETE FROM courses;\n")
+	file.write("START TRANSACTION;\nDELETE FROM courses;\n")
 	CSV.foreach('data.csv', {:col_sep => ';', :headers=>:first_row, :encoding => 'windows-1251:utf-8' }) do |row|
 		if not codes.include? compound_code row
 			codes.add compound_code row
@@ -45,11 +45,12 @@ File.open('courses.sql', 'w') { |file|
 			file.write("\n")
 		end
 	end
+	file.write("COMMIT;\n")
 }
 
 # Generate offerings SQL
 File.open('offerings.sql', 'w') { |file|
-	file.write("DELETE FROM offerings;\n")
+	file.write("START TRANSACTION;\nDELETE FROM offerings;\n")
 	CSV.foreach('data.csv', {:col_sep => ';', :headers=>:first_row, :encoding => 'windows-1251:utf-8'}) do |row|
 		course_search = search_course_statement row
 		time_start = row[TIME_START].nil? ? "NULL" : "TIME_FORMAT(#{row[TIME_START]}, '%H%i')"
@@ -58,4 +59,5 @@ File.open('offerings.sql', 'w') { |file|
 		file.write(OFFERINGS_TEMPLATE % [course_search, row[TYPE], time_start, time_end, capacity, row[DAYS]])
 		file.write("\n")
 	end
+	file.write("COMMIT;\n")
 }
