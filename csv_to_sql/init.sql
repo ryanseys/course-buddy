@@ -8,18 +8,6 @@ CREATE TABLE courses (
   name varchar(100) NOT NULL COMMENT 'course name'
 );
 
--- days table
-
-DROP TABLE IF EXISTS days;
-CREATE TABLE days (
-    day char(1) PRIMARY KEY NOT NULL
-);
-INSERT INTO days (day) VALUES ("M"); -- Monday
-INSERT INTO days (day) VALUES ("T"); -- Tuesday
-INSERT INTO days (day) VALUES ("W"); -- Wednesday
-INSERT INTO days (day) VALUES ("R"); -- Thursday
-INSERT INTO days (day) VALUES ("F"); -- Friday
-
 -- offering_types table
 
 DROP TABLE IF EXISTS offering_types;
@@ -56,12 +44,6 @@ CREATE TABLE offerings (
   type char(3) REFERENCES offering_types(type),
   time_start time COMMENT 'class start time',
   time_end time COMMENT 'class end time',
-  capacity int COMMENT 'class student capacity e.g. 400'
-);
-
-DROP TABLE IF EXISTS offering_days;
-CREATE TABLE offering_days (
-    id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    course int REFERENCES courses(id),
-    day char(1) REFERENCES days(day)
+  capacity int COMMENT 'class student capacity e.g. 400',
+  days varchar(5) COMMENT 'days a class is offered.  Possibilities: MTWRF'
 );
