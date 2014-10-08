@@ -52,8 +52,10 @@ File.open('offerings.sql', 'w') { |file|
 	file.write("DELETE FROM offerings;\n")
 	CSV.foreach('data.csv', {:col_sep => ';', :headers=>:first_row, :encoding => 'windows-1251:utf-8'}) do |row|
 		course_search = search_course_statement row
-		time_start = row[TIME_START].nil? ? "NULL" : "TIME_FORMAT(#{row[TIME_START]}, '%H%i')"
-		time_end = row[TIME_END].nil? ? "NULL" : "TIME_FORMAT(#{row[TIME_END]}, '%H%i')"
+		time_start_str = row[TIME_START] ? ("%04d" % row[TIME_START]).scan(/../).join(":") : nil
+		time_end_str = row[TIME_END] ? ("%04d" % row[TIME_END]).scan(/../).join(":") : nil
+		time_start = row[TIME_START].nil? ? "NULL" : "TIME_FORMAT(\"#{time_start_str}\", '%H:%i')"
+		time_end = row[TIME_END].nil? ? "NULL" : "TIME_FORMAT(\"#{time_end_str}\", '%H:%i')"
 		capacity = row[CAPACITY].nil? ? "NULL" : row[CAPACITY]
 		file.write(OFFERINGS_TEMPLATE % [course_search, row[TYPE], time_start, time_end, capacity, row[DAYS]])
 		file.write("\n")
