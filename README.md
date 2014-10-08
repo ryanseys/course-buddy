@@ -25,7 +25,6 @@ Import the SQL files into your `coursebuddy` database in the following order:
 1. `init.sql`
 2. `courses.sql`
 3. `offerings.sql`
-4. `offering_days.sql`
 
 ## Usage
 
