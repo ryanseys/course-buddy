@@ -1,10 +1,5 @@
-# This Script Generates 3 SQL files from the included data.csv file
+# This Script Generates 3 SQL files from the included data.csv and cses.txt files
 # Run with no parameters.
-#
-# To Load SQL into mysql
-# mysql> source init.sql
-# mysql> source courses.sql
-# mysql> source offerings.sql
 
 require 'csv'
 require 'set'
