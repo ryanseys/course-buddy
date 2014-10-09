@@ -1,3 +1,5 @@
 *.project
-*.sql
-!*init.sql
+csv_to_sql/courses.sql
+csv_to_sql/offerings.sql
+csv_to_sql/cses.sql
+/bin/

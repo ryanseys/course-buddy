@@ -1,5 +1,9 @@
 START TRANSACTION;
 
+-- ----------
+-- Courses --
+-- -----------
+
 -- courses table
 DROP TABLE IF EXISTS courses;
 CREATE TABLE courses (
@@ -23,13 +27,17 @@ CREATE TABLE offerings (
 
 -- prereqs
 DROP TABLE IF EXISTS prereqs;
-CREATE TABLE prereqs (
+CREATE TABLE prereqs(
   id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  course int REFERENCES courses(id) COMMENT "Course with Prereqs",
-  prereq int REFERENCES courses(id) COMMENT "Must be completed to take course",
+  course int REFERENCES courses(id), -- Course with prereqs
+  prereq int REFERENCES courses(id), -- Must be completed to take course
   allow_concur boolean NOT NULL,
-  equiv_group int COMMENT "Assign same id to a group of courses which would satisfy the same prereq"
+  equiv_group int COMMENT 'Assign same id to a group of courses which would satisfy the same prereq'
 );
+
+-- -----------
+-- Programs --
+-- -----------
 
 -- programs
 DROP TABLE IF EXISTS programs;
@@ -38,16 +46,42 @@ CREATE TABLE programs(
   name text NOT NULL
 );
 
--- program requirements
+-- -----------------------
+-- Program Requirements --
+-- -----------------------
+
+-- program requirements (Mandatory Courses)
 DROP TABLE IF EXISTS program_reqs;
 CREATE TABLE program_reqs(
   id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   program int REFERENCES programs(id),
   course int REFERENCES courses(id),
-  equiv_group int COMMENT "Assign same id to a group of courses which would satisfy the same program req",
-  is_elective boolean NOT NULL,
   year smallint NOT NULL COMMENT "on-pattern year this course is to be taken in",
   term ENUM("F", "W") COMMENT "on-pattern term this course is to be taken in"
+);
+
+-- elective groups (index of requirements groupings)
+DROP TABLE IF EXISTS elective_groups;
+CREATE TABLE elective_groups(
+  name varchar(128) PRIMARY KEY NOT NULL
+);
+
+-- requirements group courses (the courses in each requirements group)
+DROP TABLE IF EXISTS elective_group_courses;
+CREATE TABLE elective_group_courses(
+  id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  elective_group int REFERENCES elective_groups(id),
+  course int REFERENCES courses(id)
+);
+
+-- program elective groups (assign elective groups to a program)
+DROP TABLE IF EXISTS program_elective_groups;
+CREATE TABLE program_elective_groups(
+  id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  program int REFERENCES programs(id),
+  req_group int REFERENCES elective_groups(id),
+  year smallint NOT NULL COMMENT "on-pattern year this course is to be taken in",
+  term ENUM("F", "W") NOT NULL COMMENT "on-pattern term this course is to be taken in"
 );
 
 COMMIT;
