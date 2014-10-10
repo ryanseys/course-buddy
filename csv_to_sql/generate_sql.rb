@@ -62,12 +62,9 @@ File.open('offerings.sql', 'w') { |file|
 # Generate CSE SQL
 File.open('cses.sql', 'w') { |sql|
 	group_name = 'CSE'
-	# get_group_sql = "SELECT id from elective_groups WHERE name=\"#{group_name}\""
-
+	
 	sql.write("START TRANSACTION;\n")
-	sql.write("DELETE FROM elective_groups WHERE name=\"CSE\";\n")
 	sql.write("DELETE FROM elective_group_courses WHERE elective_group=\"#{group_name}\";\n")
-	sql.write("INSERT INTO elective_groups (name) VALUES (\"#{group_name}\");\n")
 
 	File.open("cses.txt", "r").each_line do |line|
 		dept = line.split(':')[0].strip()

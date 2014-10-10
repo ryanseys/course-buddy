@@ -60,17 +60,11 @@ CREATE TABLE program_reqs(
   term ENUM("F", "W") COMMENT "on-pattern term this course is to be taken in"
 );
 
--- elective groups (index of requirements groupings)
-DROP TABLE IF EXISTS elective_groups;
-CREATE TABLE elective_groups(
-  name varchar(128) PRIMARY KEY NOT NULL
-);
-
 -- requirements group courses (the courses in each requirements group)
 DROP TABLE IF EXISTS elective_group_courses;
 CREATE TABLE elective_group_courses(
   id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  elective_group int REFERENCES elective_groups(id),
+  elective_group ENUM("SE Note A", "SE Note B", "CSE"),
   course int REFERENCES courses(id)
 );
 
@@ -79,7 +73,7 @@ DROP TABLE IF EXISTS program_elective_groups;
 CREATE TABLE program_elective_groups(
   id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   program int REFERENCES programs(id),
-  req_group int REFERENCES elective_groups(id),
+  req_group ENUM("SE Note A", "SE Note B", "CSE"),
   year smallint NOT NULL COMMENT "on-pattern year this course is to be taken in",
   term ENUM("F", "W") NOT NULL COMMENT "on-pattern term this course is to be taken in"
 );

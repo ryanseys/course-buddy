@@ -128,7 +128,6 @@ INSERT INTO prereqs (course, prereq, allow_concur) VALUES ((SELECT id from COURS
 -- ------------
 
 -- Note A Electives (3 required)
-INSERT IGNORE INTO elective_groups (name) values ("SE Note A"); -- create Note A Elective Group
 INSERT INTO program_elective_groups (program, req_group, year, term) VALUES (@program, "SE Note A", 3, "F"); -- schedule first elective
 INSERT INTO program_elective_groups (program, req_group, year, term) VALUES (@program, "SE Note A", 4, "F"); -- sechedule second elective
 INSERT INTO program_elective_groups (program, req_group, year, term) VALUES (@program, "SE Note A", 4, "W"); -- schedule third elective
@@ -146,7 +145,6 @@ INSERT INTO elective_group_courses (elective_group, course) VALUES ("SE Note A",
 
 
 -- Note B Electives (1 required)
-INSERT IGNORE INTO elective_groups (name) values ("SE Note B"); -- create Note B Elective Group
 INSERT INTO program_elective_groups (program, req_group, year, term) VALUES (@program, "SE Note B", 4, "F"); -- schedule Note B elective
 INSERT INTO elective_group_courses (elective_group, course) VALUES ("SE Note B", (SELECT id from courses where dept="SYSC" and code=4105));
 INSERT INTO elective_group_courses (elective_group, course) VALUES ("SE Note B", (SELECT id from courses where dept="SYSC" and code=4107));
@@ -160,7 +158,6 @@ INSERT INTO elective_group_courses (elective_group, course) VALUES ("SE Note B",
 INSERT INTO elective_group_courses (elective_group, course) VALUES ("SE Note B", (SELECT id from courses where dept="COMP" and code=4106));
 
 -- CSEs
-INSERT IGNORE INTO elective_groups (name) values ("CSE"); -- create CSE Elective Group (but, it should have already been created in cses.sql)
 INSERT INTO program_elective_groups (program, req_group, year, term) VALUES (@program, "CSE", 2, "F");
 INSERT INTO program_elective_groups (program, req_group, year, term) VALUES (@program, "CSE", 2, "W");
 
