@@ -2,9 +2,15 @@
   require_once("db.php");
   $db = new database();
 
-  $all_courses = "SELECT * FROM courses LIMIT 1000";
+  $courses_sql = "SELECT * FROM courses LIMIT 1000;";
 
-  $result = $db->executeToJSONArray($all_courses);
+  $program_id = $db->escape_str($_GET["program"]);
+
+  if($program_id) {
+    $courses_sql = "SELECT * FROM courses WHERE id in (SELECT course FROM program_reqs WHERE program =".$program_id.");";
+  }
+
+  $result = $db->executeToJSONArray($courses_sql);
   echo $result;
 
   $db->close();

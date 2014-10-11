@@ -22,6 +22,10 @@
       return MYSQL_DATABASE;
     }
 
+    function escape_str($str) {
+      return $this->conn->real_escape_string($str);
+    }
+
     function create_and_select_db($dbname = MYSQL_DATABASE) {
       $this->conn->query("DROP DATABASE IF EXISTS ".$dbname.";");
       $this->conn->query("CREATE DATABASE ".$dbname.";");
