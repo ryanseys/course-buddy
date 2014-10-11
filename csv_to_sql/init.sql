@@ -1,5 +1,4 @@
 START TRANSACTION;
-
 -- ----------
 -- Courses --
 -- -----------

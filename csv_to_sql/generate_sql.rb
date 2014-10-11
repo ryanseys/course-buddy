@@ -23,7 +23,7 @@ CAPACITY = 8
 
 def get_course(dept, code)
 	return "(SELECT id from courses WHERE dept=\"#{dept}\" AND code=#{code})"
-end 
+end
 
 def compound_code(csv_row)
 	return "#{csv_row[DEPT]}#{csv_row[CODE]}"
@@ -62,7 +62,7 @@ File.open('offerings.sql', 'w') { |file|
 # Generate CSE SQL
 File.open('cses.sql', 'w') { |sql|
 	group_name = 'CSE'
-	
+
 	sql.write("START TRANSACTION;\n")
 	sql.write("DELETE FROM elective_group_courses WHERE elective_group=\"#{group_name}\";\n")
 
@@ -76,4 +76,16 @@ File.open('cses.sql', 'w') { |sql|
 	end
 
 	sql.write("COMMIT;\n")
+}
+
+all_files = ["init.sql", "courses.sql", "offerings.sql", "cses.sql", "se_tree.sql"]
+
+File.open( "install.sql", "w" ){ |file_out|
+  all_files.each { |f_name|
+    File.open(f_name){ |f_in|
+      f_in.each { |line|
+      	file_out.puts(line)
+      }
+    }
+  }
 }
