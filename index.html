@@ -10,11 +10,7 @@
 
     <form action="/setup" method="post" id="setupform">
       <h2>Select your program: </h2>
-      <select form="setupform">
-        <option>Software Engineering</option>
-        <option>Communications Engineering</option>
-        <option>Mechanical Engineering</option>
-      </select>
+      <select id="setupselect" form="setupform"></select>
 
       <h2>Are you on-pattern or off-pattern?</h2>
       <input type="radio" name="pattern" value="onpattern"/>On pattern
@@ -27,5 +23,6 @@
       etc...<br>
       <input class="submitbtn" type="submit" value="Get timetable"/>
     </form>
+    <script type="text/javascript" src="/js/coursebuddy.js"></script>
   </body>
 </html>
