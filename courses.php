@@ -10,8 +10,7 @@
     $courses_sql = "SELECT * FROM courses WHERE id in (SELECT course FROM program_reqs WHERE program =".$program_id.");";
   }
 
-  $result = $db->executeToJSONArray($courses_sql);
-  echo $result;
+  echo $db->executeToJSONArray($courses_sql);
 
   $db->close();
 ?>

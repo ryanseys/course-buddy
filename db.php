@@ -53,6 +53,7 @@
     }
 
     function executeToJSONArray($sql) {
+      header("Content-Type: application/json;");
       $results = array();
       if ($result = $this->conn->query($sql)) {
         while($row = $result->fetch_object()) {
