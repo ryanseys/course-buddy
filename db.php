@@ -18,6 +18,32 @@
       return $this->conn->query($sql);
     }
 
+    function get_name() {
+      return MYSQL_DATABASE;
+    }
+
+    function create_and_select_db($dbname = MYSQL_DATABASE) {
+      $this->conn->query("DROP DATABASE IF EXISTS ".$dbname.";");
+      $this->conn->query("CREATE DATABASE ".$dbname.";");
+      return $this->conn->select_db($dbname);
+    }
+
+    // This sets the global size of import the db will accept
+    // I have increased it here because our install.sql is larger than
+    // 1MB which is the default max packets.
+    //
+    // Note: This will likely not work on a shared DB system, but should
+    // be fine for our uses locally.
+    //
+    // See: http://stackoverflow.com/questions/8062496/how-to-change-max-allowed-packet-size
+    function set_max_packets() {
+      $this->conn->query('SET @@global.max_allowed_packet = '. 64*1024*1024);
+    }
+
+    function drop_db($dbname = MYSQL_DATABASE) {
+      $this->conn->query("DROP DATABASE IF EXISTS ".$dbname.";");
+    }
+
     function execute_multi($sql) {
       return $this->conn->multi_query($sql);
     }

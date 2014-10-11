@@ -7,8 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
   // connect, regardless of whether database exists created or not
   $db = new database();
-  $db->execute("DROP DATABASE IF EXISTS coursebuddy;");
-  $db->close();
+  $db->drop_db();
 
   echo "Done! You will be redirected shortly...";
 }
