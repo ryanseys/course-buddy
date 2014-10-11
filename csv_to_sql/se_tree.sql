@@ -34,11 +34,11 @@ INSERT INTO program_reqs (program, course, year, term) VALUES ((SELECT id FROM p
 INSERT INTO program_reqs (program, course, year, term) VALUES ((SELECT id FROM programs WHERE name = "Software Engineering"), (SELECT id from COURSES WHERE dept="CCDP" AND code=2100), 2, "F");
 
 -- Y2 TW
-INSERT INTO program_reqs (program, course, year, term) VALUES ((SELECT id FROM programs WHERE name = "Software Engineering"), (SELECT id from COURSES WHERE dept="MATH" AND code=1805), 2, "W");
+INSERT INTO program_reqs (program, course, year, term) VALUES ((SELECT id FROM programs WHERE name = "Software Engineering"), (SELECT id from COURSES WHERE dept="COMP" AND code=1805), 2, "W");
 INSERT INTO program_reqs (program, course, year, term) VALUES ((SELECT id FROM programs WHERE name = "Software Engineering"), (SELECT id from COURSES WHERE dept="ELEC" AND code=2607), 2, "W");
 INSERT INTO program_reqs (program, course, year, term) VALUES ((SELECT id FROM programs WHERE name = "Software Engineering"), (SELECT id from COURSES WHERE dept="SYSC" AND code=2003), 2, "W");
 INSERT INTO program_reqs (program, course, year, term) VALUES ((SELECT id FROM programs WHERE name = "Software Engineering"), (SELECT id from COURSES WHERE dept="SYSC" AND code=2100), 2, "W");
-INSERT INTO program_reqs (program, course, year, term) VALUES ((SELECT id FROM programs WHERE name = "Software Engineering"), (SELECT id from COURSES WHERE dept="PHYS" AND code=1104), 2, "W");
+-- INSERT INTO program_reqs (program, course, year, term) VALUES ((SELECT id FROM programs WHERE name = "Software Engineering"), (SELECT id from COURSES WHERE dept="PHYS" AND code=1104), 2, "W");
 
 -- Y3 TF
 INSERT INTO program_reqs (program, course, year, term) VALUES ((SELECT id FROM programs WHERE name = "Software Engineering"), (SELECT id from COURSES WHERE dept="ECOR" AND code=3800), 3, "F");
