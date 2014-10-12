@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Course Buddy - Carleton U Course Scheduling Tool</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+  </head>
+  <body>
+    <img class="culogo" src="/img/carleton_logo.png">
+    <h1>Course Buddy - Carleton U Course Scheduling Tool</h1>
+
+    <form action="/setup" method="post" id="setupform">
+      <h2>Select your program: </h2>
+      <select id="setupselect" form="setupform"></select>
+
+      <h2>Are you on-pattern or off-pattern?</h2>
+      <input type="radio" name="pattern" value="onpattern" onclick="setOnPattern()"/>On pattern
+      <input type="radio" name="pattern" value="offpattern" onclick="setOffPattern()"/>Off pattern
+
+      <div id='class_selection' style="display:none;">
+        <h2>What classes have you taken?</h2>
+        <ul id='progcourses'></ul>
+      </div>
+      <div>
+        <input class="submitbtn" type="submit" value="Get timetable"/>
+      </div>
+    </form>
+    <script type="text/javascript" src="/js/coursebuddy.js"></script>
+  </body>
+</html>
