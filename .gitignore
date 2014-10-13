@@ -3,4 +3,6 @@ csv_to_sql/courses.sql
 csv_to_sql/offerings.sql
 csv_to_sql/cses.sql
 csv_to_sql/install.sql
-/bin/
+*/bin/*
+*.classpath
+*/Thumbs.db
