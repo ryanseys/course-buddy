@@ -3,7 +3,10 @@ package client.controllers;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.MalformedURLException;
 import java.net.URL;
+
+import client.models.Constants;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -33,6 +36,10 @@ public class ApiHandler {
 		
 		// Return Result
 		return ele;
+	}
+	
+	public URL getUrl(String path) throws MalformedURLException{
+		return new URL(String.format("http://%s:%d/%s", Constants.HOST, Constants.PORT, path));
 	}
 
 }

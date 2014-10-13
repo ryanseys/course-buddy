@@ -9,15 +9,14 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import com.google.gson.JsonElement;
-
 import client.listeners.CourseListener;
 import client.listeners.ProgramListener;
 import client.listeners.SubmitListener;
 import client.listeners.YesNoListener;
-import client.models.Constants;
 import client.models.Course;
 import client.models.Program;
+
+import com.google.gson.JsonElement;
 
 public class MainViewController implements ProgramListener, CourseListener, YesNoListener, SubmitListener {
 	
@@ -32,7 +31,7 @@ public class MainViewController implements ProgramListener, CourseListener, YesN
 	
 	public void refresh(){
 		try {
-			URL url = new URL(String.format("http://%s/programs.php", Constants.HOST));
+			URL url = apiHandler.getUrl("programs.php");
 			JsonElement response = apiHandler.send(url);
 			List<Program> programs = Program.generateProgramList(response);
 			for (ProgramListener l : programListeners){
@@ -98,7 +97,7 @@ public class MainViewController implements ProgramListener, CourseListener, YesN
 		
 		if (selectedProgram != null && onPattern != null && !onPattern){
 			try {
-				URL url = new URL(String.format("http://%s/courses.php?program=%d", Constants.HOST, selectedProgram.id));
+				URL url = apiHandler.getUrl("courses.php?program=" + selectedProgram.id);
 				JsonElement response = apiHandler.send(url);
 				courses.addAll(Course.generateCourseList(response));
 			} catch (MalformedURLException e) {
