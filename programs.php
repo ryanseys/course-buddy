@@ -1,19 +1,21 @@
 <?php
-  require_once("db.php");
-  require_once("http_args.php");
 
-  $db = new database();
+require_once ("db.php");
+require_once ("http_args.php");
 
-  $program_id = get_arg("id");
+$db = new database();
 
-  if ($program_id !== null){
-  	$program_id = $db->escape_str($program_id);
-  	$sql = "SELECT * FROM programs WHERE id=$program_id;";
-  } else {
-  	$sql = "SELECT * FROM programs;";
-  }
+$program_id = get_arg("id");
 
-  echo $db->executeToJSONArray($sql);
+if ($program_id !== null) {
+    $program_id = $db->escape_str($program_id);
+    $sql = "SELECT * FROM programs WHERE id=$program_id;";
+} else {
+    $sql = "SELECT * FROM programs;";
+}
 
-  $db->close();
+echo $db->executeToJSONArray($sql);
+
+$db->close();
+
 ?>
