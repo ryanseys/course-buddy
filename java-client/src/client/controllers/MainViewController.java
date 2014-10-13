@@ -13,16 +13,22 @@ import com.google.gson.JsonElement;
 
 import client.listeners.CourseListener;
 import client.listeners.ProgramListener;
+import client.listeners.SubmitListener;
+import client.listeners.YesNoListener;
 import client.models.Constants;
 import client.models.Course;
 import client.models.Program;
 
-public class MainViewController implements ProgramListener {
+public class MainViewController implements ProgramListener, CourseListener, YesNoListener, SubmitListener {
 	
 	private final Collection<ProgramListener> programListeners = new LinkedList<>();
 	private final Collection<CourseListener> courseListeners = new LinkedList<>();
 	
 	private final ApiHandler apiHandler = new ApiHandler();
+	
+	private Collection<Course> coursesTaken = new LinkedList<>();
+	private Program selectedProgram;
+	private Boolean onPattern;
 	
 	public void refresh(){
 		try {
@@ -53,13 +59,46 @@ public class MainViewController implements ProgramListener {
 	}
 
 	@Override
-	public void selectProgram(Program program, boolean onPattern) {
+	public void selectProgram(Program program) {
+		selectedProgram = program;
+		updateCourseList();
+	}
+
+	@Override
+	public void yesNoSelection(boolean value) {
+		onPattern = value;
+		updateCourseList();
+	}
+	
+	@Override
+	public void updateCourses(List<Course> courses) {
+		coursesTaken = courses;
+	}
+	
+	@Override
+	public void submit() {
+		if (selectedProgram != null && onPattern != null){
+			StringBuilder message = new StringBuilder();
+			message.append("Data Gathered:\n\n");
+			message.append("Program: ").append(selectedProgram).append("\n");
+			message.append("On Pattern: ").append(onPattern).append("\n");
+			message.append("\n");
+			message.append("Courses Taken:\n");
+			message.append("\n");
+			for (Course course : coursesTaken){
+				message.append(course).append("\n");
+			}
+			
+			JOptionPane.showMessageDialog(null, message.toString());
+		}
+	}
+	
+	private void updateCourseList(){
 		final List<Course> courses = new LinkedList<>();
 		
-		
-		if (program != null && onPattern){
+		if (selectedProgram != null && onPattern != null && !onPattern){
 			try {
-				URL url = new URL(String.format("http://%s/courses.php?program=%d", Constants.HOST, program.id));
+				URL url = new URL(String.format("http://%s/courses.php?program=%d", Constants.HOST, selectedProgram.id));
 				JsonElement response = apiHandler.send(url);
 				courses.addAll(Course.generateCourseList(response));
 			} catch (MalformedURLException e) {
@@ -73,5 +112,9 @@ public class MainViewController implements ProgramListener {
 			l.updateCourses(courses);
 		}
 	}
+
+	
+
+	
 
 }

@@ -7,6 +7,7 @@ import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.event.ListSelectionListener;
 
 public class MultiSelector<T> implements ViewComponent {
 	
@@ -36,6 +37,10 @@ public class MultiSelector<T> implements ViewComponent {
 	
 	public void clear(){
 		model.clear();
+	}
+	
+	public void addListSelectionListener(ListSelectionListener l){
+		list.addListSelectionListener(l);
 	}
 	
 	public void updateItems(List<T> items){

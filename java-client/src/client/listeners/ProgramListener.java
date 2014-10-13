@@ -7,6 +7,6 @@ import client.models.Program;
 public interface ProgramListener {
 	
 	public void updatePrograms(List<Program> programs);
-	public void selectProgram(Program program, boolean onPattern);
+	public void selectProgram(Program program);
 
 }

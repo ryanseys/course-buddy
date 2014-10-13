@@ -23,6 +23,9 @@ public class Client {
 		mainViewController.addProgramListener(mainView);
 		mainViewController.addCourseListener(mainView);
 		mainView.addProgramListener(mainViewController);
+		mainView.addYesNoListener(mainViewController);
+		mainView.addCourseListener(mainViewController);
+		mainView.addSubmitListener(mainViewController);
 		mainViewController.refresh();
 		
 		// start
