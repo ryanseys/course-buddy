@@ -43,7 +43,7 @@ class database {
     //
     // See: http://stackoverflow.com/questions/8062496/how-to-change-max-allowed-packet-size
     function set_max_packets() {
-        $this->conn->query('SET @@global.max_allowed_packet = '.64 * 1024 * 1024);
+        $this->conn->query('SET @@global.max_allowed_packet = ' . (64 * 1024 * 1024));
     }
 
     function drop_db($dbname = MYSQL_DATABASE) {
