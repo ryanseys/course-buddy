@@ -7,23 +7,34 @@
   <body>
     <img class="culogo" src="/img/carleton_logo.png">
     <h1>Course Buddy - Carleton U Course Scheduling Tool</h1>
+    <h2>Select your program: </h2>
+    <select id="setupselect" form="setupform"></select>
 
-    <form action="/setup" method="post" id="setupform">
-      <h2>Select your program: </h2>
-      <select id="setupselect" form="setupform"></select>
+    <h2>Are you on-pattern or off-pattern?</h2>
+    <input type="radio" name="pattern" value="onpattern" onclick="setOnPattern()"/>On pattern
+    <input type="radio" name="pattern" value="offpattern" onclick="setOffPattern()"/>Off pattern
 
-      <h2>Are you on-pattern or off-pattern?</h2>
-      <input type="radio" name="pattern" value="onpattern" onclick="setOnPattern()"/>On pattern
-      <input type="radio" name="pattern" value="offpattern" onclick="setOffPattern()"/>Off pattern
+    <div id='class_selection' style="display:none;">
+      <h2>What classes have you taken?</h2>
+      <ul id='progcourses'></ul>
+    </div>
 
-      <div id='class_selection' style="display:none;">
-        <h2>What classes have you taken?</h2>
-        <ul id='progcourses'></ul>
-      </div>
-      <div>
-        <input class="submitbtn" type="submit" value="Get timetable"/>
-      </div>
-    </form>
+    <div id='term_selection' style="display:none;">
+      <h2>What term do you want to generate courses for?</h2>
+      <ul id='terms'>
+        <input type="radio" name="term" value="f1"/>Fall - 1st Year<br>
+        <input type="radio" name="term" value="w1" />Winter - 1st Year<br>
+        <input type="radio" name="term" value="f2"/>Fall - 2nd Year<br>
+        <input type="radio" name="term" value="w2" />Winter - 2nd Year<br>
+        <input type="radio" name="term" value="f3"/>Fall - 3rd Year<br>
+        <input type="radio" name="term" value="w3" />Winter - 3rd Year<br>
+        <input type="radio" name="term" value="f4"/>Fall - 4th Year<br>
+        <input type="radio" name="term" value="w4" />Winter - 4th Year<br>
+      </ul>
+    </div>
+    <div>
+    <button class="submitbtn" onclick="getTimetable()">Get timetable</button>
+    </div>
     <script type="text/javascript" src="/js/coursebuddy.js"></script>
   </body>
 </html>
