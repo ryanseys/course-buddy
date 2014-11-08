@@ -97,22 +97,30 @@ function getTimetable() {
     courseids.push(el.value.toString());
   }
 
-  var data = {};
 
-  if(term && term.value) {
-    data.term = term.value;
-  }
+
+  var data = {};
 
   if(pattern && pattern.value) {
     data.pattern = pattern.value;
   }
 
-  if(courseids && courseids.length) {
-    data.courses = courseids;
-  }
-
   if(program) {
     data.program = program;
+  }
+
+  if(data.pattern === 'on') {
+    if(term && term.value) {
+      data.term = term.value;
+    } else {
+      alert('You must select a term!');
+      return false;
+    }
+  } else if(data.pattern === 'off') {
+    data.courses = courseids || [];
+  } else {
+    alert('You must select on or off pattern!');
+    return false;
   }
 
   request({
