@@ -1,0 +1,28 @@
+<?php
+
+require_once ('db.php');
+require_once ('http_args.php');
+require_once ("json_responses.php");
+require_once ("sql.php");
+
+$db = new database();
+
+$pattern = get_arg('pattern');
+$pattern = $db->escape_str($pattern);
+$program = get_arg('program');
+$program = $db->escape_str($program);
+
+if ($pattern == 'on') {
+    $courses = get_program_courses_for_term($db, $program, get_arg('term'), get_arg('year'));
+    // $electives = get_program_electives($db, $program);
+    echoAsJSON($courses);
+} else if ($pattern == 'off') {
+    $courses = get_arg('courses');
+    // echo 'Courses: ' . $courses . '<br>';
+} else {
+    echo error_json('Specify on or off pattern.');
+}
+
+$db->close();
+
+?>

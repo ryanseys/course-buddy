@@ -54,8 +54,17 @@ class database {
         return $this->conn->multi_query($sql);
     }
 
+    function executeToArray($sql) {
+        $results = array();
+        if ($result = $this->conn->query($sql)) {
+            while ($row = $result->fetch_object()) {
+                array_push($results, $row);
+            }
+        }
+        return $results;
+    }
+
     function executeToJSONArray($sql) {
-        header("Content-Type: application/json;");
         $results = array();
         if ($result = $this->conn->query($sql)) {
             while ($row = $result->fetch_object()) {

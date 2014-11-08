@@ -2,19 +2,18 @@
 
 require_once ("db.php");
 require_once ("http_args.php");
+require_once ("json_responses.php");
+require_once ("sql.php");
 
 $db = new database();
 
 $program_id = get_arg("id");
 
 if ($program_id !== null) {
-    $program_id = $db->escape_str($program_id);
-    $sql = "SELECT * FROM programs WHERE id=$program_id;";
+    echoAsJSON(get_program_by_id($db, $program_id));
 } else {
-    $sql = "SELECT * FROM programs;";
+    echoAsJSON(get_all_programs($db));
 }
-
-echo $db->executeToJSONArray($sql);
 
 $db->close();
 

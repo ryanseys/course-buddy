@@ -2,6 +2,7 @@
 
 require_once ("db.php");
 require_once ("http_args.php");
+
 $db = new database();
 
 $course_id = get_arg("id");
