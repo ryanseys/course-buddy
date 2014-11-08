@@ -5,8 +5,8 @@ var term_selection = document.getElementById('term_selection');
 
 /**
  * Build a query string.
- * querystring({ "hello": "this is a test" }) --> "?hello=this%20is%20a%20test"
- * querystring({ "i": "test", nice: "it&works" }) --> "?i=test&nice=it%26works"
+ * querystring({ "hello": "this is a test" }) --> "hello=this%20is%20a%20test"
+ * querystring({ "i": "test", nice: "it&works" }) --> "i=test&nice=it%26works"
  *
  * @param  {object} obj key value pair for building querystring.
  * @return {[type]}     the built query string or empty string.
@@ -97,8 +97,6 @@ function getTimetable() {
     courseids.push(el.value.toString());
   }
 
-
-
   var data = {};
 
   if(pattern && pattern.value) {
@@ -111,7 +109,10 @@ function getTimetable() {
 
   if(data.pattern === 'on') {
     if(term && term.value) {
-      data.term = term.value;
+      // split into term and year (f1 --> term:f, year:1)
+      term = term.split('');
+      data.term = term[0];
+      data.year = term[1];
     } else {
       alert('You must select a term!');
       return false;
