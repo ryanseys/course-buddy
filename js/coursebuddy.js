@@ -2,6 +2,9 @@ var setupselect = document.getElementById('setupselect');
 var progcourses = document.getElementById('progcourses');
 var class_selection = document.getElementById('class_selection');
 var term_selection = document.getElementById('term_selection');
+var timetable = document.getElementById('timetable');
+var tt;
+
 
 /**
  * Build a query string.
@@ -40,9 +43,10 @@ function request(options, callback) {
   req.onload = function() {
     if (json) {
       try {
-        callback(JSON.parse(this.responseText));
+        var jdata = JSON.parse(this.responseText);
+        callback(jdata);
       } catch(e) {
-        console.log('Could not parse as JSON: ' + this.responseText);
+        console.log(e, ' Could not parse as JSON: ' + this.responseText);
         callback([]);
       }
     } else {
@@ -127,9 +131,13 @@ function getTimetable() {
   request({
     method: 'get',
     url: 'timetable.php',
-    data: data
+    data: data,
+    json: true
   }, function(resp) {
-    console.log(resp);
+    tt = new Timetable(resp);
+    tt.generateAll();
+    var theHtml = tt.getHTML();
+    timetable.innerHTML = theHtml;
   });
 
   return false;
@@ -166,28 +174,135 @@ get_programs(function(programs) {
 
 function Timetable(offerings) {
   this.offerings = offerings || [];
-  this.timetable = [];
+  this.timetable = { 'M': [], 'T': [], 'W': [], 'R': [], 'F': [] };
 }
 
 Timetable.prototype._createCourseBuckets = function(offerings) {
   var courseBucket = {};
   var o = offerings || [];
   for(var i = 0; i < o.length; i++) {
-    var list = courseBucket[o[i].course] || [];
+    var index = o[i].course + ',' + o[i].type;
+    var list = courseBucket[index] || [];
     list.push(o[i]);
-    courseBucket[o[i].course] = list;
+    courseBucket[index] = list;
   }
-  return courseBucket;
+
+  var courseBucketKeys = Object.keys(courseBucket);
+
+  var courseBucketArray = [];
+  for(var j = 0; j < courseBucketKeys.length; j++) {
+    courseBucketArray.push(courseBucket[courseBucketKeys[j]]);
+  }
+  return courseBucketArray;
 };
 
-Timetable.prototype.generateAll = function(course) {
-  var courseBucket = this._createCourseBuckets(this.offerings);
-  var cids = Object.keys(courseBucket);
-  var timetable = [];
-  // for each course
-  for(var i = 0; i < cids.length; i++) {
-    var courseid = cids[i];
-    var coursetype = courseBucket[courseid].type;
 
+Timetable.prototype.doesNotConflict = function(course, otherCourses) {
+  var timeStart = parseInt(course.time_start.split(':').join(''));
+  var timeEnd = parseInt(course.time_end.split(':').join(''));
+  var otherTimeStart, otherTimeEnd;
+  for(var i = 0; i < otherCourses.length; i++) {
+    otherTimeStart = parseInt(otherCourses[i].time_start.split(':').join(''));
+    otherTimeEnd = parseInt(otherCourses[i].time_end.split(':').join(''));
+
+    // course starts before other course finishes
+    if(timeStart >= otherTimeStart && timeStart <= otherTimeEnd) {
+      return false;
+    }
+
+    // course ends after other course starts
+    if(timeEnd <= otherTimeEnd && timeEnd >= otherTimeStart) {
+      return false;
+    }
+
+    // course surrounds other course
+    if(timeStart <= otherTimeStart && timeEnd >= otherTimeEnd) {
+      return false;
+    }
+
+    // other course surrounds course
+    if(otherTimeStart <= timeStart && otherTimeEnd >= timeEnd) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+Timetable.prototype.getHTML = function() {
+  var str = '<div>';
+  var days = Object.keys(this.timetable);
+  for(var i = 0; i < days.length; i++) {
+    var day = days[i];
+    str += '<br>' + day + '<br><ul>';
+    var offers = this.timetable[day];
+    for(var j = 0; j < offers.length; j++) {
+      var offer = offers[j];
+      str += '<li>' + offer.dept + ' ' + offer.code + ' ' + offer.type + ' ' +
+          offer.time_start + ' to ' + offer.time_end + ' on ' + offer.days + '</li>';
+    }
+    str += '</ul>';
+  }
+  str += '</div>';
+  return str;
+};
+
+Timetable.prototype.generateAll = function() {
+  this.timetable = { 'M': [], 'T': [], 'W': [], 'R': [], 'F': [] };
+  var courseBucketArray = this._createCourseBuckets(this.offerings);
+  var lastUsedIndex = {};
+  var finished = false;
+
+  // all courses (cid + type)
+  var courseIndex = 0;
+  var courseLimit = courseBucketArray.length;
+
+  // all offers for a course
+  var offerIndex = 0;
+  var offerLimit;
+
+  while(!finished) {
+    if(courseIndex === courseLimit) {
+      // end of courses
+      finished = true;
+      break;
+    }
+    if(offerIndex === offerLimit) {
+      // exhausted all offers from this course,
+      // must try another offer from previous course
+      courseIndex--;
+      offerIndex = lastUsedIndex[courseIndex]++;
+      break;
+    }
+
+    lastUsedIndex[courseIndex] = offerIndex;
+    offerLimit = courseBucketArray[courseIndex].length;
+
+    var offerArray = courseBucketArray[courseIndex];
+    var offer = offerArray[offerIndex];
+    var days = offer.days.split('');
+    var conflictFound = false;
+
+    // check if offer conflicts with anything in the
+    for(var i = 0; i < days.length; i++) {
+      if(!this.doesNotConflict(offer, this.timetable[days[i]])) {
+        conflictFound = true;
+        break;
+      }
+    }
+
+    if(!conflictFound) {
+      // add offer to timetable
+      for(var j = 0; j < days.length; j++) {
+        this.timetable[days[j]].push(offer);
+      }
+    } else {
+      // try next offer
+      offerIndex++;
+      break;
+    }
+
+    courseIndex++;
+    offerIndex = 0;
   }
 };
