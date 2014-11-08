@@ -1,6 +1,9 @@
 <?php
 
-$post_body = file_get_contents('php://input');
-$data = json_decode($post_body);
+$program = $_GET["program"];
+$courses = $_GET["courses"];
+
+echo "Program: " . $program . "<br>";
+echo "Courses: " . $courses . "<br>";
 
 ?>
