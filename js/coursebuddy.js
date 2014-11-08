@@ -110,7 +110,7 @@ function getTimetable() {
   if(data.pattern === 'on') {
     if(term && term.value) {
       // split into term and year (f1 --> term:f, year:1)
-      term = term.split('');
+      term = term.value.split('');
       data.term = term[0];
       data.year = term[1];
     } else {
@@ -163,3 +163,31 @@ get_programs(function(programs) {
     setupselect.appendChild(el);
   }
 });
+
+function Timetable(offerings) {
+  this.offerings = offerings || [];
+  this.timetable = [];
+}
+
+Timetable.prototype._createCourseBuckets = function(offerings) {
+  var courseBucket = {};
+  var o = offerings || [];
+  for(var i = 0; i < o.length; i++) {
+    var list = courseBucket[o[i].course] || [];
+    list.push(o[i]);
+    courseBucket[o[i].course] = list;
+  }
+  return courseBucket;
+};
+
+Timetable.prototype.generateAll = function(course) {
+  var courseBucket = this._createCourseBuckets(this.offerings);
+  var cids = Object.keys(courseBucket);
+  var timetable = [];
+  // for each course
+  for(var i = 0; i < cids.length; i++) {
+    var courseid = cids[i];
+    var coursetype = courseBucket[courseid].type;
+
+  }
+};

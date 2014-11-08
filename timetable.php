@@ -3,6 +3,7 @@
 require_once ('db.php');
 require_once ('http_args.php');
 require_once ("json_responses.php");
+require_once ("sql.php");
 
 $db = new database();
 
@@ -12,22 +13,9 @@ $program = get_arg('program');
 $program = $db->escape_str($program);
 
 if ($pattern == 'on') {
-    $term = get_arg('term');
-    $term = $db->escape_str($term);
-    $year = get_arg('year');
-    $year = $db->escape_str($year);
-    $sql = (
-        "SELECT o.id, c.id AS course, type, term, time_start, time_end, capacity, days, dept, code, name
-        FROM offerings o
-        INNER JOIN courses c
-        ON c.id=o.course
-        WHERE o.course
-        IN (SELECT course
-            FROM program_reqs
-            WHERE program=$program AND term=\"$term\" AND year=$year
-        );");// select courses by program id
-    echo $db->executeToJSONArray($sql);
-    // echo 'Term: ' . $term . '<br>';
+    $courses = get_program_courses_for_term($db, $program, get_arg('term'), get_arg('year'));
+    // $electives = get_program_electives($db, $program);
+    echoAsJSON($courses);
 } else if ($pattern == 'off') {
     $courses = get_arg('courses');
     // echo 'Courses: ' . $courses . '<br>';
