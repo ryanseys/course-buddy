@@ -7,15 +7,34 @@
   <h1>Install CourseBuddy</h1>
   <p>Welcome to the CourseBuddy installation page. Here you can install and
   uninstall CourseBuddy.</p>
-  <p>To install CourseBuddy database and all tables... click below.</p>
-  <form method="post" action="install.php">
-    <input type="submit" value="Install">
-  </form>
+  <p>To install CourseBuddy database and all tables... fill in the fields and click below.</p>
+  
+  <table>
+    <tr>
+      <td><strong>Host Address: </strong></td>
+      <td><input type="text" id="host" value="localhost" /></td>
+    </tr>
+    <tr>
+      <td><strong>Port: </strong></td>
+      <td><input type="text" id="port" value="3306" /></td>
+    </tr>
+    <tr>
+      <td><strong>Username: </strong></td>
+      <td><input type="text" id="username" value="root" /></td>
+    </tr>
+    <tr>
+      <td><strong>Password: </strong></td>
+      <td><input type="password" id="password" value="" /></td>
+    </tr>
+  </table>
+  <button onclick="install()">Install</button>
+  <div id="install_progress"></div>
 
   <p>To uninstall CourseBuddy database and all tables... click here instead.</p>
-  <form method="post" action="uninstall.php">
-    <input type="submit" value="Uninstall">
-  </form>
+  <button onclick="uninstall()">Uninstall</button>
+  <div id="uninstall_progress"></div>
 
+  <script type="text/javascript" src="js/xhr_helper.js"></script>
+  <script type="text/javascript" src="js/install.js"></script>
 </body>
 </html>
