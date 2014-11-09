@@ -36,19 +36,20 @@ function request(options, callback) {
   var qs = querystring(data);
   var method = options.method.toLowerCase();
   var url = method === 'get' ? options.url + '?' + qs : options.url;
-  var json = !!options.json;
+  var j = !!options.json;
 
   console.log('requesting:', method, url);
   req.open(method, url, true);
   req.onload = function() {
-    if (json) {
+    if (j) {
+      var jdata;
       try {
-        var jdata = JSON.parse(this.responseText);
-        callback(jdata);
+        jdata = JSON.parse(this.responseText);
       } catch(e) {
         console.log(e, ' Could not parse as JSON: ' + this.responseText);
-        callback([]);
+        jdata = [];
       }
+      callback(jdata);
     } else {
       callback(this.responseText);
     }
@@ -135,9 +136,11 @@ function getTimetable() {
     json: true
   }, function(resp) {
     tt = new Timetable(resp);
-    tt.generateAll();
-    var theHtml = tt.getHTML();
-    timetable.innerHTML = theHtml;
+    var tts = tt.generateAll();
+    timetable.innerHTML = '';
+    for (var i = 0; i < tts.length; i++) {
+      timetable.innerHTML += getHTML(tts[i]);
+    }
   });
 
   return false;
@@ -174,10 +177,9 @@ get_programs(function(programs) {
 
 function Timetable(offerings) {
   this.offerings = offerings || [];
-  this.timetable = { 'M': [], 'T': [], 'W': [], 'R': [], 'F': [] };
 }
 
-Timetable.prototype._createCourseBuckets = function(offerings) {
+Timetable.prototype._getClasses = function(offerings) {
   var courseBucket = {};
   var o = offerings || [];
   for(var i = 0; i < o.length; i++) {
@@ -196,14 +198,29 @@ Timetable.prototype._createCourseBuckets = function(offerings) {
   return courseBucketArray;
 };
 
-
 Timetable.prototype.doesNotConflict = function(course, otherCourses) {
-  var timeStart = parseInt(course.time_start.split(':').join(''));
-  var timeEnd = parseInt(course.time_end.split(':').join(''));
+  var timeStart = course.time_start ? parseInt(course.time_start.split(':').join('')) : Infinity;
+  var timeEnd = course.time_end ? parseInt(course.time_end.split(':').join('')) : -Infinity;
+  var courseDays = course.days ? course.days.split('') : [];
   var otherTimeStart, otherTimeEnd;
-  for(var i = 0; i < otherCourses.length; i++) {
-    otherTimeStart = parseInt(otherCourses[i].time_start.split(':').join(''));
-    otherTimeEnd = parseInt(otherCourses[i].time_end.split(':').join(''));
+
+  var len = otherCourses.length;
+  for(var i = 0; i < len; i++) {
+    var otherCourse = otherCourses[i];
+    otherTimeStart = otherCourse.time_start ? parseInt(otherCourse.time_start.split(':').join('')) : +Infinity;
+    otherTimeEnd = otherCourse.time_end ? parseInt(otherCourse.time_end.split(':').join('')) : -Infinity;
+    otherDays = otherCourse.days ? otherCourse.days.split('') : [];
+
+    var sameDay = false;
+    for(var j = 0; j < courseDays.length; j++) {
+      if(otherDays.indexOf(courseDays[j]) !== -1) {
+        sameDay = true;
+      }
+    }
+
+    if(!sameDay) {
+      continue; // next other course
+    }
 
     // course starts before other course finishes
     if(timeStart >= otherTimeStart && timeStart <= otherTimeEnd) {
@@ -229,80 +246,94 @@ Timetable.prototype.doesNotConflict = function(course, otherCourses) {
   return true;
 };
 
-Timetable.prototype.getHTML = function() {
-  var str = '<div>';
-  var days = Object.keys(this.timetable);
-  for(var i = 0; i < days.length; i++) {
-    var day = days[i];
-    str += '<br>' + day + '<br><ul>';
-    var offers = this.timetable[day];
-    for(var j = 0; j < offers.length; j++) {
-      var offer = offers[j];
-      str += '<li>' + offer.dept + ' ' + offer.code + ' ' + offer.type + ' ' +
-          offer.time_start + ' to ' + offer.time_end + ' on ' + offer.days + '</li>';
-    }
-    str += '</ul>';
+function getHTML(tt) {
+  var str = '<div><ul>';
+
+  for(var i = 0; i < tt.length; i++) {
+    var offer = tt[i];
+    str += '<li>' + offer.dept + ' ' + offer.code + ' ' + offer.type + ' ' +
+        offer.time_start + ' to ' + offer.time_end + ' on ' + offer.days + '</li>';
   }
-  str += '</div>';
+  str += '</ul></div>';
   return str;
+}
+
+function initArray(length, value) {
+  var arr = [], i = 0;
+  arr.length = length;
+  while (i < length) {
+    arr[i++] = value;
+  }
+  return arr;
+}
+
+/**
+ * Generates stupid timetable by adding all the classes based on indexes.
+ * @param  {[type]} classes [description]
+ * @param  {[type]} indexes [description]
+ * @return {[type]}         [description]
+ */
+Timetable.prototype.getTimetable = function(classes, indexes) {
+  var timetable = [];
+  for(var i = 0; i < indexes.length; i++) {
+    var classIndex = indexes[i][0];
+    timetable.push(classes[i][classIndex]);
+  }
+  return timetable;
 };
 
-Timetable.prototype.generateAll = function() {
-  this.timetable = { 'M': [], 'T': [], 'W': [], 'R': [], 'F': [] };
-  var courseBucketArray = this._createCourseBuckets(this.offerings);
-  var lastUsedIndex = {};
-  var finished = false;
-
-  // all courses (cid + type)
-  var courseIndex = 0;
-  var courseLimit = courseBucketArray.length;
-
-  // all offers for a course
-  var offerIndex = 0;
-  var offerLimit;
-
-  while(!finished) {
-    if(courseIndex === courseLimit) {
-      // end of courses
-      finished = true;
-      break;
+Timetable.prototype.isConflictFree = function(timetable) {
+  var tt = timetable.slice(0); // copy the timetable
+  var count = 0;
+  var len = tt.length;
+  while(count !== len) {
+    var offer = tt.shift();
+    if(!this.doesNotConflict(offer, tt)) {
+      return false;
     }
-    if(offerIndex === offerLimit) {
-      // exhausted all offers from this course,
-      // must try another offer from previous course
-      courseIndex--;
-      offerIndex = lastUsedIndex[courseIndex]++;
-      break;
-    }
-
-    lastUsedIndex[courseIndex] = offerIndex;
-    offerLimit = courseBucketArray[courseIndex].length;
-
-    var offerArray = courseBucketArray[courseIndex];
-    var offer = offerArray[offerIndex];
-    var days = offer.days.split('');
-    var conflictFound = false;
-
-    // check if offer conflicts with anything in the
-    for(var i = 0; i < days.length; i++) {
-      if(!this.doesNotConflict(offer, this.timetable[days[i]])) {
-        conflictFound = true;
-        break;
-      }
-    }
-
-    if(!conflictFound) {
-      // add offer to timetable
-      for(var j = 0; j < days.length; j++) {
-        this.timetable[days[j]].push(offer);
-      }
-    } else {
-      // try next offer
-      offerIndex++;
-      break;
-    }
-
-    courseIndex++;
-    offerIndex = 0;
+    tt.push(offer);
+    count++;
   }
+  return true;
+};
+
+function increaseIndexes(indexes) {
+  var newindexes = indexes.slice(0);
+  var i = newindexes.length - 1;
+  while(i !== -1) {
+    var index = newindexes[i];
+    if(index[0] >= index[1]) {
+      i--;
+      continue; // cannot increase this index
+    }
+    newindexes[i][0]++;
+    break;
+  }
+  return newindexes;
+}
+
+Timetable.prototype.generateAll = function() {
+  var ci = 0;
+  var oi = 0;
+  var timetables = [];
+  var aTimetable = [];
+
+  var classes = this._getClasses(this.offerings);
+
+  var indexes = [];
+  for(var i = 0; i < classes.length; i++) {
+    indexes.push([0, classes[i].length-1]);
+  }
+
+  while(indexes[0][0] !== indexes[0][1]) {
+    var tt = this.getTimetable(classes, indexes);
+
+    if(this.isConflictFree(tt)) {
+      timetables.push(tt);
+    }
+
+    indexes = increaseIndexes(indexes);
+  }
+
+  return timetables;
 };
