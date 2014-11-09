@@ -59,12 +59,11 @@ File.open('offerings.sql', 'w') { |file|
 				time_end_str = ("%04d" % row[TIME_END]).scan(/../).join(":")
 
 				course_search = get_course(row[DEPT], row[CODE])
-				time_start = row[TIME_START].nil? ? "NULL" : "TIME_FORMAT(\"#{time_start_str}\", '%H:%i')"
-				time_end = row[TIME_END].nil? ? "NULL" : "TIME_FORMAT(\"#{time_end_str}\", '%H:%i')"
-				capacity = row[CAPACITY].nil? ? "NULL" : row[CAPACITY]
+				time_start = "TIME_FORMAT(\"#{time_start_str}\", '%H:%i')"
+				time_end = "TIME_FORMAT(\"#{time_end_str}\", '%H:%i')"
 				term = (fname == 'datafall.csv' ? "F" : "W")
 
-				file.write(OFFERINGS_TEMPLATE % [course_search, row[TYPE], term, time_start, time_end, capacity, row[DAYS]])
+				file.write(OFFERINGS_TEMPLATE % [course_search, row[TYPE], term, time_start, time_end, row[CAPACITY], row[DAYS]])
 				file.write("\n")
 			end
 		end
