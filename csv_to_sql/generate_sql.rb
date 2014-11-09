@@ -54,15 +54,18 @@ File.open('offerings.sql', 'w') { |file|
 	file.write("START TRANSACTION;\nDELETE FROM offerings;\n")
 	datafiles.each { |fname|
 		CSV.foreach(fname, {:col_sep => ';', :headers=>:first_row, :encoding => 'windows-1251:utf-8'}) do |row|
-			course_search = get_course(row[DEPT], row[CODE])
-			time_start_str = row[TIME_START] ? ("%04d" % row[TIME_START]).scan(/../).join(":") : nil
-			time_end_str = row[TIME_END] ? ("%04d" % row[TIME_END]).scan(/../).join(":") : nil
-			time_start = row[TIME_START].nil? ? "NULL" : "TIME_FORMAT(\"#{time_start_str}\", '%H:%i')"
-			time_end = row[TIME_END].nil? ? "NULL" : "TIME_FORMAT(\"#{time_end_str}\", '%H:%i')"
-			capacity = row[CAPACITY].nil? ? "NULL" : row[CAPACITY]
-			term = (fname == 'datafall.csv' ? "F" : "W")
-			file.write(OFFERINGS_TEMPLATE % [course_search, row[TYPE], term, time_start, time_end, capacity, row[DAYS]])
-			file.write("\n")
+			if row[TIME_START] and row[TIME_END] and row[CAPACITY]
+				time_start_str = ("%04d" % row[TIME_START]).scan(/../).join(":")
+				time_end_str = ("%04d" % row[TIME_END]).scan(/../).join(":")
+
+				course_search = get_course(row[DEPT], row[CODE])
+				time_start = "TIME_FORMAT(\"#{time_start_str}\", '%H:%i')"
+				time_end = "TIME_FORMAT(\"#{time_end_str}\", '%H:%i')"
+				term = (fname == 'datafall.csv' ? "F" : "W")
+
+				file.write(OFFERINGS_TEMPLATE % [course_search, row[TYPE], term, time_start, time_end, row[CAPACITY], row[DAYS]])
+				file.write("\n")
+			end
 		end
 	}
 
