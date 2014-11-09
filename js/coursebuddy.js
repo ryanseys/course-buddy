@@ -277,10 +277,7 @@ function initArray(length, value) {
 }
 
 /**
- * Generates stupid timetable by adding all the classes based on indexes.
- * @param  {[type]} classes [description]
- * @param  {[type]} indexes [description]
- * @return {[type]}         [description]
+ * Generates potential timetable by adding all the classes based on indexes.
  */
 Timetable.prototype.getTimetable = function(classes, indexes) {
   var timetable = [];
