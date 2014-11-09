@@ -135,6 +135,7 @@ function getTimetable() {
     data: data,
     json: true
   }, function(resp) {
+
     tt = new Timetable(resp);
     var tts = tt.generateAll();
     timetable.innerHTML = '';
@@ -233,21 +234,25 @@ Timetable.prototype.doesNotConflict = function(course, otherCourses) {
 
     // course starts before other course finishes
     if(timeStart >= otherTimeStart && timeStart <= otherTimeEnd) {
+      // console.log('Conflict found: ', course, otherCourse);
       return false;
     }
 
     // course ends after other course starts
     if(timeEnd <= otherTimeEnd && timeEnd >= otherTimeStart) {
+      // console.log('Conflict found: ', course, otherCourse);
       return false;
     }
 
     // course surrounds other course
     if(timeStart <= otherTimeStart && timeEnd >= otherTimeEnd) {
+      // console.log('Conflict found: ', course, otherCourse);
       return false;
     }
 
     // other course surrounds course
     if(otherTimeStart <= timeStart && otherTimeEnd >= timeEnd) {
+      // console.log('Conflict found: ', course, otherCourse);
       return false;
     }
   }
@@ -282,8 +287,10 @@ function initArray(length, value) {
 Timetable.prototype.getTimetable = function(classes, indexes) {
   var timetable = [];
   for(var i = 0; i < indexes.length; i++) {
-    var classIndex = indexes[i][0];
-    timetable.push(classes[i][classIndex]);
+    var classIndex = indexes[i][0] - 1;
+    classIndex = classIndex === -1 ? 0 : classIndex;
+    var offer = classes[i][classIndex];
+    timetable.push(offer);
   }
   return timetable;
 };
@@ -307,38 +314,33 @@ function increaseIndexes(indexes) {
   var newindexes = indexes.slice(0);
   var i = newindexes.length - 1;
   while(i !== -1) {
-    var index = newindexes[i];
-    if(index[0] >= index[1]) {
+    if(newindexes[i][0] < newindexes[i][1]) {
+      newindexes[i][0]++;
+      break;
+    } else {
       i--;
-      continue; // cannot increase this index
     }
-    newindexes[i][0]++;
-    break;
   }
   return newindexes;
 }
 
 Timetable.prototype.generateAll = function() {
-  var ci = 0;
-  var oi = 0;
   var timetables = [];
   var aTimetable = [];
-
+  var indexes = [];
   var classes = this._getClasses(this.offerings);
 
-  var indexes = [];
   for(var i = 0; i < classes.length; i++) {
-    indexes.push([0, classes[i].length-1]);
+    indexes.push([0, classes[i].length]);
   }
 
   while(indexes[0][0] !== indexes[0][1]) {
+    indexes = increaseIndexes(indexes);
     var tt = this.getTimetable(classes, indexes);
 
     if(this.isConflictFree(tt)) {
       timetables.push(tt);
     }
-
-    indexes = increaseIndexes(indexes);
   }
 
   return timetables;
