@@ -87,6 +87,7 @@ function get_courses(program_id, callback) {
 }
 
 function setOnPattern() {
+  timetable.innerHTML = '';
   class_selection.style.display = 'none';
   term_selection.style.display = '';
 }
@@ -135,10 +136,16 @@ function getTimetable() {
     data: data,
     json: true
   }, function(resp) {
-
+    timetable.innerHTML = '<br><b>Generating timetables...</b><br>';
     tt = new Timetable(resp);
     var tts = tt.generateAll();
-    timetable.innerHTML = '';
+
+    if(tts.length === 0) {
+      timetable.innerHTML = '<br><b>There were no timetables found.</b><br>';
+    } else {
+      timetable.innerHTML = '';
+    }
+
     for (var i = 0; i < tts.length; i++) {
       timetable.innerHTML += getHTML(tts[i]);
     }
@@ -148,6 +155,7 @@ function getTimetable() {
 }
 
 function setOffPattern() {
+  timetable.innerHTML = '';
   term_selection.style.display = 'none';
   get_courses(get_selected_program(), function(courses) {
     var course;
@@ -265,7 +273,7 @@ function getHTML(tt) {
 
   for(var i = 0; i < tt.length; i++) {
     var offer = tt[i];
-    str += '<li>' + offer.dept + ' ' + offer.code + ' ' + offer.type + ' ' +
+    str += '<li>' + offer.dept + ' ' + offer.code + ' ' + offer.type + ' ' + offer.seq + ' ' +
         offer.time_start + ' to ' + offer.time_end + ' on ' + offer.days + '</li>';
   }
   str += '</ul></div>';

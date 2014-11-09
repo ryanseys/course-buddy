@@ -18,6 +18,7 @@ CREATE TABLE offerings (
   id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   course int REFERENCES courses(id),
   type ENUM('LEC', 'TUT', 'LAB', 'GRP', 'PLA', 'SEM', 'PAS', 'PRC', 'IND', 'WRK', 'REP', 'WKS', 'OTH', 'STU', 'VOD', 'FIE', 'DIR', 'PAN', 'FLM', 'NTC'),
+  seq varchar(6) COMMENT 'section like A, A1, B1',
   term ENUM('F', 'W', 'S'),
   time_start time COMMENT 'class start time',
   time_end time COMMENT 'class end time',

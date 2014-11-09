@@ -20,7 +20,7 @@ function get_program_courses_for_term($db, $program, $term, $year) {
     $term = $db->escape_str($term);
     $year = $db->escape_str($year);
     $sql = (
-        "SELECT o.id, c.id AS course, type, term, time_start, time_end, capacity, days, dept, code, name
+        "SELECT o.id, c.id AS course, type, seq, term, time_start, time_end, capacity, days, dept, code, name
       FROM offerings o
       INNER JOIN courses c
       ON c.id=o.course

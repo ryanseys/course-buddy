@@ -7,8 +7,8 @@ require 'set'
 COURSES_TEMPLATE =
 	'INSERT INTO courses (dept, code, name) VALUES ("%s", %s, "%s");'
 OFFERINGS_TEMPLATE =
-	'INSERT INTO offerings (course, type, term, time_start, time_end, capacity, days)'\
-	' VALUES (%s, "%s", "%s", %s, %s, %s, "%s");'
+	'INSERT INTO offerings (course, type, seq, term, time_start, time_end, capacity, days)'\
+	' VALUES (%s, "%s", "%s", "%s", %s, %s, %s, "%s");'
 
 # data.csv indexes
 DEPT = 0
@@ -54,7 +54,7 @@ File.open('offerings.sql', 'w') { |file|
 	file.write("START TRANSACTION;\nDELETE FROM offerings;\n")
 	datafiles.each { |fname|
 		CSV.foreach(fname, {:col_sep => ';', :headers=>:first_row, :encoding => 'windows-1251:utf-8'}) do |row|
-			if row[TIME_START] and row[TIME_END] and row[CAPACITY]
+			if row[TIME_START] and row[TIME_END] and row[CAPACITY] and row[SECTION]
 				time_start_str = ("%04d" % row[TIME_START]).scan(/../).join(":")
 				time_end_str = ("%04d" % row[TIME_END]).scan(/../).join(":")
 
@@ -62,8 +62,9 @@ File.open('offerings.sql', 'w') { |file|
 				time_start = "TIME_FORMAT(\"#{time_start_str}\", '%H:%i')"
 				time_end = "TIME_FORMAT(\"#{time_end_str}\", '%H:%i')"
 				term = (fname == 'datafall.csv' ? "F" : "W")
+				seq = row[SECTION]
 
-				file.write(OFFERINGS_TEMPLATE % [course_search, row[TYPE], term, time_start, time_end, row[CAPACITY], row[DAYS]])
+				file.write(OFFERINGS_TEMPLATE % [course_search, row[TYPE], seq, term, time_start, time_end, row[CAPACITY], row[DAYS]])
 				file.write("\n")
 			end
 		end
