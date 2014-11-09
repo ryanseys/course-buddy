@@ -9,10 +9,12 @@ $offering_ids = json_decode($_POST["enrollIn"]);
 $results = array();
 
 // Enroll in each course individually, and store results of each enrollment
+$db->conn->autoCommit(FALSE);
 foreach($offering_ids as $offering_id){
     $result = enroll($db, $offering_id);
     $results[$offering_id] = $result;
 }
+$db->conn->commit();
 
 echoAsJson($results);
 
