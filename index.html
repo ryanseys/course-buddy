@@ -2,10 +2,10 @@
 <html>
   <head>
     <title>Course Buddy - Carleton U Course Scheduling Tool</title>
-    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
   </head>
   <body>
-    <img class="culogo" src="/img/carleton_logo.png">
+    <img class="culogo" src="img/carleton_logo.png">
     <h1>Course Buddy - Carleton U Course Scheduling Tool</h1>
     <h2>Select your program: </h2>
     <select id="setupselect" form="setupform"></select>
@@ -36,6 +36,7 @@
     <button class="submitbtn" onclick="getTimetable()">Get timetable</button>
     </div>
     <div id="timetable"></div>
-    <script type="text/javascript" src="/js/coursebuddy.js"></script>
+    <script type="text/javascript" src="js/xhr_helper.js"></script>
+    <script type="text/javascript" src="js/coursebuddy.js"></script>
   </body>
 </html>
