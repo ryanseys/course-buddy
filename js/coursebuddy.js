@@ -198,17 +198,26 @@ Timetable.prototype._getClasses = function(offerings) {
   return courseBucketArray;
 };
 
+function getTimes(course) {
+  return {
+    start: course.time_start ? parseInt(course.time_start.split(':').join('')) : +Infinity,
+    end: course.time_end ? parseInt(course.time_end.split(':').join('')) : -Infinity
+  };
+}
+
 Timetable.prototype.doesNotConflict = function(course, otherCourses) {
-  var timeStart = course.time_start ? parseInt(course.time_start.split(':').join('')) : Infinity;
-  var timeEnd = course.time_end ? parseInt(course.time_end.split(':').join('')) : -Infinity;
+  var courseTimes = getTimes(course);
+  var timeStart = courseTimes.start;
+  var timeEnd = courseTimes.end;
   var courseDays = course.days ? course.days.split('') : [];
   var otherTimeStart, otherTimeEnd;
 
   var len = otherCourses.length;
   for(var i = 0; i < len; i++) {
     var otherCourse = otherCourses[i];
-    otherTimeStart = otherCourse.time_start ? parseInt(otherCourse.time_start.split(':').join('')) : +Infinity;
-    otherTimeEnd = otherCourse.time_end ? parseInt(otherCourse.time_end.split(':').join('')) : -Infinity;
+    var otherCourseTimes = getTimes(otherCourse);
+    otherTimeStart = otherCourseTimes.start;
+    otherTimeEnd = otherCourseTimes.end;
     otherDays = otherCourse.days ? otherCourse.days.split('') : [];
 
     var sameDay = false;
