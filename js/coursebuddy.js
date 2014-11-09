@@ -3,6 +3,7 @@ var progcourses = document.getElementById('progcourses');
 var class_selection = document.getElementById('class_selection');
 var term_selection = document.getElementById('term_selection');
 var timetable = document.getElementById('timetable');
+var enroll_button = document.getElementById("enroll_button");
 var tt;
 
 
@@ -93,6 +94,9 @@ function getTimetable() {
     for (var i = 0; i < tts.length; i++) {
       timetable.innerHTML += getHTML(tts[i]);
     }
+
+    // Reveal timetable selector form
+    enroll_button.style.display = "inline";
   });
 
   return false;
@@ -213,7 +217,15 @@ Timetable.prototype.doesNotConflict = function(course, otherCourses) {
 };
 
 function getHTML(tt) {
-  var str = '<div><ul>';
+
+  // Get json array of offering ids
+  var offering_ids = [];
+  for (var i in tt){
+    offering_ids.push(tt[i].id);
+  }
+  offering_ids = JSON.stringify(offering_ids);
+
+  var str = '<div><input type="radio" name="enrollIn" value=' + offering_ids + '>Select this Timetable</input><ul>';
 
   for(var i = 0; i < tt.length; i++) {
     var offer = tt[i];
@@ -222,15 +234,6 @@ function getHTML(tt) {
   }
   str += '</ul></div>';
   return str;
-}
-
-function initArray(length, value) {
-  var arr = [], i = 0;
-  arr.length = length;
-  while (i < length) {
-    arr[i++] = value;
-  }
-  return arr;
 }
 
 /**

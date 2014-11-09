@@ -35,7 +35,12 @@
     <div>
     <button class="submitbtn" onclick="getTimetable()">Get timetable</button>
     </div>
-    <div id="timetable"></div>
+
+    <form action="enroll.php" method="post">
+      <div id="timetable"></div>
+      <input id="enroll_button" type="submit" value="Enroll in these Courses" style="display:none;"/>
+    </form>
+
     <script type="text/javascript" src="js/xhr_helper.js"></script>
     <script type="text/javascript" src="js/coursebuddy.js"></script>
   </body>
