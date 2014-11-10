@@ -6,7 +6,7 @@
  * @param  {object} obj key value pair for building querystring.
  * @return {[type]}     the built query string or empty string.
  */
-function querystring(obj) {
+function _querystring(obj) {
   obj = obj || {};
   var str = '';
   var keys = Object.keys(obj);
@@ -21,11 +21,22 @@ function querystring(obj) {
   return str.slice(0, -1);
 }
 
+function _get_request(options){
+  var req = new XMLHttpRequest();
+  var data = options.data || {};
+  var qs = _querystring(data);
+  var method = options.method.toLowerCase();
+  var url = method === 'get' ? options.url + '?' + qs : options.url;
+
+  console.log('AJAX requesting:', method, url);
+  req.open(method, url, options.async);
+}
+
 function request(options, callback) {
   options = options || {};
   var req = new XMLHttpRequest();
   var data = options.data || {};
-  var qs = querystring(data);
+  var qs = _querystring(data);
   var method = options.method.toLowerCase();
   var url = method === 'get' ? options.url + '?' + qs : options.url;
   var j = !!options.json;
@@ -45,9 +56,13 @@ function request(options, callback) {
   }
 }
 
+function sync_request(options){
+
+}
+
 function get(url, param_object){
     var req = new XMLHttpRequest();
-    var qs = querystring(param_object || {});
+    var qs = _querystring(param_object || {});
     if (qs){
       url += '?' + qs;
     }

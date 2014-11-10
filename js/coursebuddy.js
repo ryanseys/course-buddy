@@ -16,6 +16,16 @@ function get_programs(callback) {
   }, callback);
 }
 
+function _get_electives(group_names, callback){
+  request({
+    method: 'get',
+    url: 'electives.php',
+    json: true,
+    urleconde: true,
+    data: {groups: JSON.stringify(group_names)}
+  }, callback);
+}
+
 function get_selected_program() {
   return setupselect.options[setupselect.selectedIndex].value;
 }
@@ -239,7 +249,7 @@ function getTimetableHTML(tt) {
   }
   offering_ids = JSON.stringify(offering_ids);
 
-  var str = '<div><input type="radio" name="enroll_in" value=' + offering_ids + '>Select this Timetable</input><ul>';
+  var str = '<div><input type="radio" name="enroll_in" value=' + offering_ids + '/>Select this Timetable<ul>';
 
   for(var i = 0; i < tt.length; i++) {
     var offer = tt[i];
@@ -252,6 +262,11 @@ function getTimetableHTML(tt) {
 
 function getElectiveHtml(){
   var electives_html = '';
+
+  _get_electives(getCurrentElectiveGroups(), function(resp) {
+    console.log('foo');
+    console.log(resp);
+  });
 
   var current_groups = getCurrentElectiveGroups();
   for (var group_i in current_groups){
@@ -266,12 +281,12 @@ function getElectiveHtml(){
       var elective = electives[j];
       electives_html += '<input type="radio" name="' + group.req_group + '" value="' + elective.id + '"/>';
       electives_html += elective.dept + ' ' + elective.code + ': ' + elective.name + '</div>';
-      electives_html += '</input><br/>';
+      electives_html += '<br/>';
     }
   }
 
   if (electives_html){
-    electives_html = '<h2>Select your Electives' + electives_html;
+    electives_html = '<h2>Select your Electives</h2>' + electives_html;
   }
 
   return electives_html;
@@ -288,7 +303,7 @@ function getCurrentElectiveGroups(){
       var group = elective_groups[i];
 
       // if current elective group found, add it to array
-      if (group.year.toLowerCase() == SelectedTerm.year && group.term.toLowerCase() == SelectedTerm.term){
+      if (group.year.toLowerCase() === SelectedTerm.year && group.term.toLowerCase() === SelectedTerm.term){
         current_groups.push(group);
       }
     }
