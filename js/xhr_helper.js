@@ -45,19 +45,6 @@ function request(options, callback) {
   }
 }
 
-
-function get(url, param_object){
-    var req = new XMLHttpRequest();
-    var qs = _querystring(param_object || {});
-    if (qs){
-      url += '?' + qs;
-    }
-    console.log('synchronous requesting:', 'GET', url);
-    req.open('GET', url, false);
-    req.send();
-    return _parse_response(req);
-}
-
 function _parse_response(resp){
  var jdata = [];
   try {

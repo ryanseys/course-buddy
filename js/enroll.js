@@ -11,33 +11,32 @@ function enroll(){
     return false;
   }
 
-  // get offering ids of selected elective sources
-  var current_groups = getCurrentElectiveGroups();
-  for (var i in current_groups){
-    var group = current_groups[i];
-
-    // Ensure that an elective was chosen for each group, and add to array
-    var selected_elective = _getSelectedElective(group.req_group);
-    if (selected_elective){
-      offering_ids.push(selected_elective);
-    } else {
-      alert("You have not selected an elective");
-      return false;
+  // Add elective choices to offering_ids
+  _get_current_elective_group_names(get_selected_program(), function(group_names){
+    for (var i in group_names){
+      // Ensure that an elective was chosen for each group, and add to array
+      var selected_elective = _getSelectedElective(group_names[i]);
+      if (selected_elective){
+        offering_ids.push(selected_elective);
+      } else {
+        alert("You have not selected an elective");
+        return false;
+      }
     }
-  }
 
-  // Request Enrolment
-  request({
-    method: 'post',
-    url: 'enroll.php',
-    json: true,
-    urlencode: true,
-    data: {enroll_in: JSON.stringify(offering_ids)}
-  }, function(results){
-    for (var i in results){
-      var result = JSON.parse(results[i]);
-      results_div.innerHTML += '<li>' + (result.success ? 'Enrolled': 'Not Enrolled') + ': ' + result.dept + ' ' + result.code + ': ' + result.name + ' ' + result.seq + '</li>';
-    }
+    // Request Enrolment
+    request({
+      method: 'post',
+      url: 'enroll.php',
+      json: true,
+      urlencode: true,
+      data: {enroll_in: JSON.stringify(offering_ids)}
+    }, function(results){
+      for (var i in results){
+        var result = JSON.parse(results[i]);
+        results_div.innerHTML += '<li>' + (result.success ? 'Enrolled': 'Not Enrolled') + ': ' + result.dept + ' ' + result.code + ': ' + result.name + ' ' + result.seq + '</li>';
+      }
+    });
   });
 }
 

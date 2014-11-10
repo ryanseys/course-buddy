@@ -120,8 +120,8 @@ function getTimetable() {
   // Reveal timetable selector form
   enroll_button.style.display = "inline";
 
-  // Get Electives HTML
-  getElectiveHtml();
+  // Write Electives HTML
+  putElectiveHtml();
 
   return false;
 }
@@ -260,59 +260,70 @@ function getTimetableHTML(tt) {
   return str;
 }
 
-function getElectiveHtml(){
+function putElectiveHtml(){
   // Get names of current elective group
-  var current_groups = getCurrentElectiveGroups();
-  var group_names = [];
-  for (var i in current_groups){
-    var group = current_groups[i];
-    group_names.push(group.req_group);
+  var current_groups = [];
+
+  var SelectedTerm = get_selected_term();
+  if (SelectedTerm === null){
+    return;
   }
 
-  // Request possible courses for all of the required elective groups, and then build elective selector
-  _get_electives(group_names, function(elective_groups) {
-    var electives_html = '';
+  // Get the names of the elective groups for this program for this term
+  _get_current_elective_group_names(get_selected_program(), function(group_names){
 
-    // For Each Elective Group, build course selection HTML
-    for (var i in elective_groups){
-      var elective_group = elective_groups[i];
-      var electives = elective_group.electives;
+    // Using group names for this term, get the lists of possible electives for each group
+    _get_electives(group_names, function(elective_groups) {
+      var electives_html = '';
 
-      electives_html += '<h3>' + elective_group.req_group + '</h3>';
+      // For Each Elective Group, build course selection HTML
+      for (var i in elective_groups){
+        var elective_group = elective_groups[i];
+        var electives = elective_group.electives;
 
-      // For each elective in this group, add its option to HTML
-      for (var j in electives){
-        var elective = electives[j];
-        electives_html += '<input type="radio" name="' + group.req_group + '" value="' + elective.id + '"/>';
-        electives_html += elective.dept + ' ' + elective.code + ': ' + elective.name + '</div>';
-        electives_html += '<br/>';
+        electives_html += '<h3>' + elective_group.req_group + '</h3>';
+
+        // For each elective in this group, add its option to HTML
+        for (var j in electives){
+          var elective = electives[j];
+          electives_html += '<input type="radio" name="' + elective_group.req_group + '" value="' + elective.id + '"/>';
+          electives_html += elective.dept + ' ' + elective.code + ': ' + elective.name + '</div>';
+          electives_html += '<br/>';
+        }
       }
-    }
 
-    // Add Elective Selector HTML to DOM
-    if (electives_html){
-      electives_div.innerHTML = '<h2>Select your Electives</h2>' + electives_html
-    }
+      // Add Elective Selector HTML to DOM
+      if (electives_html){
+        electives_div.innerHTML = '<h2>Select your Electives</h2>' + electives_html;
+      }
+    });
   });
 }
 
 /* Gets only the elective groups that are available for the selected term. */
-function getCurrentElectiveGroups(){
-  var current_groups = [];
-
+function _get_current_elective_group_names(program_id, callback){
   var SelectedTerm = get_selected_term();
   if (SelectedTerm != null){
-    var elective_groups = get('electives.php', {program: get_selected_program()});
-    for(var i in elective_groups){
-      var group = elective_groups[i];
+    request({
+      method: 'get',
+      url: 'electives.php',
+      json: true,
+      data: {program: program_id}
+    }, function(elective_groups){
 
-      // if current elective group found, add it to array
-      if (group.year.toLowerCase() === SelectedTerm.year && group.term.toLowerCase() === SelectedTerm.term){
-        current_groups.push(group);
+      // Get group names for current term
+      var group_names = [];
+      for(var i in elective_groups){
+        var group = elective_groups[i];
+        if (group.year.toLowerCase() === SelectedTerm.year && group.term.toLowerCase() === SelectedTerm.term){
+          group_names.push(group.req_group);
+        }
       }
-    }
+
+      // Send group names to callback function
+      callback(group_names);
+    });
   }
-  return current_groups;
 }
 
 /**
