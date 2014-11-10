@@ -30,9 +30,8 @@ function enroll(){
   var req = new XMLHttpRequest();
   console.log('synchronous requesting:', 'POST', 'enroll.php');
   req.open('POST', 'enroll.php', false);
-  req.send(JSON.stringify(offering_ids));
-
-  //console.log(req.responseText);
+  req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+  req.send('enroll_in=' + JSON.stringify(offering_ids));
 
   // Write Enrollment Results to HTML
   var response = JSON.parse(req.responseText);

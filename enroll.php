@@ -4,14 +4,12 @@ require_once ("db.php");
 require_once ("http_args.php");
 require_once ("json_responses.php");
 
-$post_body = file_get_contents('php://input');
-
-if (!$post_body){
-    echo error_json('please include array of offering ids in POST body');
+if (!isset($_POST['enroll_in'])){
+    echo error_jon('expected enroll_in argument');
 }
 
 $db = new database();
-$offering_ids = json_decode($post_body);
+$offering_ids = json_decode($_POST['enroll_in']);
 $results = array();
 
 // Enroll in each course individually, and store results of each enrollment
