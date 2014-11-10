@@ -18,7 +18,7 @@ if ($program_id){
 } else if ($group_names){
     $results = array();
     foreach(json_decode($group_names) as $group_name){
-        $results[$group_name] = get_electives($db, $group_name);
+        array_push($results, ['req_group' => $group_name, 'electives' => get_electives($db, $group_name)]);
     }
     echo json_encode($results);
 } else {
@@ -29,17 +29,19 @@ $db->close();
 
 function get_elective_groups($db, $program_id){
     $program_id = $db->escape_str($program_id);
-    return get_program_electives($db, $program_id);
+    $res = get_program_electives($db, $program_id);
+    return $res;
 }
 
 function get_electives($db, $group_name){
     $group_name = $db->escape_str($group_name);
-    return $db->execute(
+    $res = $db->executeToArray(
         "SELECT c.id, c.dept, c.code, c.name
         FROM elective_group_courses g
         INNER JOIN courses c
         ON g.course=c.id
         WHERE g.elective_group=\"$group_name\";"
     );
+    return $res;
 }
 ?>

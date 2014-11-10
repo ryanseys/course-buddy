@@ -121,7 +121,7 @@ function getTimetable() {
   enroll_button.style.display = "inline";
 
   // Get Electives HTML
-  electives_div.innerHTML = getElectiveHtml();
+  getElectiveHtml();
 
   return false;
 }
@@ -261,35 +261,39 @@ function getTimetableHTML(tt) {
 }
 
 function getElectiveHtml(){
-  var electives_html = '';
-
-  _get_electives(getCurrentElectiveGroups(), function(resp) {
-    console.log('foo');
-    console.log(resp);
-  });
-
+  // Get names of current elective group
   var current_groups = getCurrentElectiveGroups();
-  for (var group_i in current_groups){
+  var group_names = [];
+  for (var i in current_groups){
+    var group = current_groups[i];
+    group_names.push(group.req_group);
+  }
 
-    // Add group to HTML
-    var group = current_groups[group_i];
-    electives_html += '<h3>' + group.req_group + '</h3>';
+  // Request possible courses for all of the required elective groups, and then build elective selector
+  _get_electives(group_names, function(elective_groups) {
+    var electives_html = '';
 
-    // For each elective in group, add it to HTML
-    var electives = get('electives.php', {group: group.req_group});
-    for (var j in electives){
-      var elective = electives[j];
-      electives_html += '<input type="radio" name="' + group.req_group + '" value="' + elective.id + '"/>';
-      electives_html += elective.dept + ' ' + elective.code + ': ' + elective.name + '</div>';
-      electives_html += '<br/>';
+    // For Each Elective Group, build course selection HTML
+    for (var i in elective_groups){
+      var elective_group = elective_groups[i];
+      var electives = elective_group.electives;
+
+      electives_html += '<h3>' + elective_group.req_group + '</h3>';
+
+      // For each elective in this group, add its option to HTML
+      for (var j in electives){
+        var elective = electives[j];
+        electives_html += '<input type="radio" name="' + group.req_group + '" value="' + elective.id + '"/>';
+        electives_html += elective.dept + ' ' + elective.code + ': ' + elective.name + '</div>';
+        electives_html += '<br/>';
+      }
     }
-  }
 
-  if (electives_html){
-    electives_html = '<h2>Select your Electives</h2>' + electives_html;
-  }
-
-  return electives_html;
+    // Add Elective Selector HTML to DOM
+    if (electives_html){
+      electives_div.innerHTML = '<h2>Select your Electives</h2>' + electives_html
+    }
+  });
 }
 
 /* Gets only the elective groups that are available for the selected term. */

@@ -6,3 +6,4 @@ csv_to_sql/install.sql
 */bin/*
 *.classpath
 */Thumbs.db
+*.log
