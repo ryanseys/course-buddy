@@ -5,7 +5,7 @@ require_once ("http_args.php");
 require_once ("json_responses.php");
 
 if (!isset($_POST['enroll_in'])){
-    echo error_jon('expected enroll_in argument');
+    echo error_json('expected enroll_in argument');
 }
 
 $db = new database();

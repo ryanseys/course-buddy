@@ -16,6 +16,7 @@ function enroll(){
   for (var i in current_groups){
     var group = current_groups[i];
 
+    // Ensure that an elective was chosen for each group, and add to array
     var selected_elective = _getSelectedElective(group.req_group);
     if (selected_elective){
       offering_ids.push(selected_elective);
@@ -25,23 +26,19 @@ function enroll(){
     }
   }
 
-  // Request Enrollment
-  console.log("about to enroll in", offering_ids);
-  var req = new XMLHttpRequest();
-  console.log('synchronous requesting:', 'POST', 'enroll.php');
-  req.open('POST', 'enroll.php', false);
-  req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-  req.send('enroll_in=' + JSON.stringify(offering_ids));
-
-  // Write Enrollment Results to HTML
-  var response = JSON.parse(req.responseText);
-  var results_html = '<h2>Enrollment Results</h2><ul>';
-  for (var i in response){
-    var result = JSON.parse(response[i]);
-    console.log(result);
-    results_html += '<li>' + (result.success ? 'Enrolled': 'Not Enrolled') + ': ' + result.dept + ' ' + result.code + ': ' + result.name + ' ' + result.seq + '</li>';
-  }
-  results_div.innerHTML = results_html + '</ul>';
+  // Request Enrolment
+  request({
+    method: 'post',
+    url: 'enroll.php',
+    json: true,
+    urlencode: true,
+    data: {enroll_in: JSON.stringify(offering_ids)}
+  }, function(results){
+    for (var i in results){
+      var result = JSON.parse(results[i]);
+      results_div.innerHTML += '<li>' + (result.success ? 'Enrolled': 'Not Enrolled') + ': ' + result.dept + ' ' + result.code + ': ' + result.name + ' ' + result.seq + '</li>';
+    }
+  });
 }
 
 /* Gets the selected elective for the elective group with the given name */

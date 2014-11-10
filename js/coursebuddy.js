@@ -21,7 +21,7 @@ function _get_electives(group_names, callback){
     method: 'get',
     url: 'electives.php',
     json: true,
-    urleconde: true,
+    urlencode: true,
     data: {groups: JSON.stringify(group_names)}
   }, callback);
 }
@@ -249,7 +249,7 @@ function getTimetableHTML(tt) {
   }
   offering_ids = JSON.stringify(offering_ids);
 
-  var str = '<div><input type="radio" name="enroll_in" value=' + offering_ids + '/>Select this Timetable<ul>';
+  var str = '<div><input type="radio" name="enroll_in" value=' + offering_ids + '></input>Select this Timetable<ul>';
 
   for(var i = 0; i < tt.length; i++) {
     var offer = tt[i];
