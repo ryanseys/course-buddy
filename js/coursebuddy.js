@@ -4,6 +4,7 @@ var class_selection = document.getElementById('class_selection');
 var term_selection = document.getElementById('term_selection');
 var timetable = document.getElementById('timetable');
 var enroll_button = document.getElementById("enroll_button");
+var electives_div = document.getElementById("electives");
 var tt;
 
 
@@ -17,6 +18,16 @@ function get_programs(callback) {
 
 function get_selected_program() {
   return setupselect.options[setupselect.selectedIndex].value;
+}
+
+function get_selected_term(){
+  var term = document.querySelector('input[name="term"]:checked');
+  if(term && term.value) {
+    term = term.value.split('');
+    return {"year": term[1], "term": term[0]};
+  }
+  alert('You must select a term!');
+  return null;
 }
 
 function get_courses(program_id, callback) {
@@ -94,10 +105,13 @@ function getTimetable() {
     for (var i = 0; i < tts.length; i++) {
       timetable.innerHTML += getHTML(tts[i]);
     }
-
-    // Reveal timetable selector form
-    enroll_button.style.display = "inline";
   });
+
+  // Reveal timetable selector form
+  enroll_button.style.display = "inline";
+
+  // Get Electives HTML
+  electives_div.innerHTML = getElectiveHtml();
 
   return false;
 }
@@ -225,7 +239,7 @@ function getHTML(tt) {
   }
   offering_ids = JSON.stringify(offering_ids);
 
-  var str = '<div><input type="radio" name="enrollIn" value=' + offering_ids + '>Select this Timetable</input><ul>';
+  var str = '<div><input type="radio" name="enroll_in" value=' + offering_ids + '>Select this Timetable</input><ul>';
 
   for(var i = 0; i < tt.length; i++) {
     var offer = tt[i];
@@ -234,6 +248,39 @@ function getHTML(tt) {
   }
   str += '</ul></div>';
   return str;
+}
+
+function getElectiveHtml(){
+  var electives_html = '';
+
+  var SelectedTerm = get_selected_term();
+  if (SelectedTerm != null){
+    var elective_groups = get('electives.php', {program: get_selected_program()});
+
+    // For each elective group, get electives for it
+    for(var i in elective_groups){
+      var group = elective_groups[i];
+
+      if (group.year.toLowerCase() == SelectedTerm.year && group.term.toLowerCase() == SelectedTerm.term){
+        electives_html += '<h3>' + group.req_group + '</h3>';
+        var electives = get('electives.php', {group: group.req_group});
+
+        // For each elective in group, add it to html
+        for (var j in electives){
+          var elective = electives[j];
+          electives_html += '<input type="radio" name="' + group.req_group + '" value="' + elective.id + '"/>';
+          electives_html += elective.dept + ' ' + elective.code + ': ' + elective.name + '</div>';
+          electives_html += '</input><br/>';
+        }
+      }
+    }
+  }
+
+  if (electives_html){
+    electives_html = '<h2>Select your Electives' + electives_html;
+  }
+
+  return electives_html;
 }
 
 /**

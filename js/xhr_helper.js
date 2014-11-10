@@ -30,23 +30,12 @@ function request(options, callback) {
   var url = method === 'get' ? options.url + '?' + qs : options.url;
   var j = !!options.json;
 
-  console.log('requesting:', method, url);
+  console.log('AJAX requesting:', method, url);
   req.open(method, url, true);
   if (options.urlencode)
     req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
   req.onload = function() {
-    if (j) {
-      var jdata;
-      try {
-        jdata = JSON.parse(this.responseText);
-      } catch(e) {
-        console.log(e, ' Could not parse as JSON: ' + this.responseText);
-        jdata = [];
-      }
-      callback(jdata);
-    } else {
-      callback(this.responseText);
-    }
+    callback(j ? _parse_response(this) : this.responseText);
   };
 
   if(method === 'post') {
@@ -54,4 +43,23 @@ function request(options, callback) {
   } else {
     req.send();
   }
+}
+
+function get(url, param_object){
+    var req = new XMLHttpRequest();
+    url += '?' + querystring(param_object || {});
+    console.log('synchronous requesting:', 'GET', url);
+    req.open('GET', url, false);
+    req.send();
+    return _parse_response(req);
+}
+
+function _parse_response(resp){
+ var jdata = [];
+  try {
+    jdata = JSON.parse(resp.responseText);
+  } catch(e) {
+    console.log(e, ' Could not parse as JSON: ' + resp.responseText);
+  }
+  return jdata;
 }
