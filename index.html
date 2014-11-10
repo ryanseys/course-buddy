@@ -36,13 +36,18 @@
     <button class="submitbtn" onclick="getTimetable()">Get timetable</button>
     </div>
 
-      <div id="timetable"></div>
+      <form id="form_enroll">
+        <div id="timetable"></div>
 
-      <div id="electives"></div>
+        <div id="electives"></div>
 
-      <input id="enroll_button" type="submit" value="Enroll in these Courses" style="display:none;"/>
+        <button id="enroll_button" type="button" class="submitbtn" onclick="enroll()" style="display: none;">Enroll in these Courses</button>
+      </form>
+
+      <div id="results"></div>
 
     <script type="text/javascript" src="js/xhr_helper.js"></script>
     <script type="text/javascript" src="js/coursebuddy.js"></script>
+    <script type="text/javascript" src="js/enroll.js"></script>
   </body>
 </html>

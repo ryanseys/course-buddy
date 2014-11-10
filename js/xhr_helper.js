@@ -47,7 +47,10 @@ function request(options, callback) {
 
 function get(url, param_object){
     var req = new XMLHttpRequest();
-    url += '?' + querystring(param_object || {});
+    var qs = querystring(param_object || {});
+    if (qs){
+      url += '?' + qs;
+    }
     console.log('synchronous requesting:', 'GET', url);
     req.open('GET', url, false);
     req.send();

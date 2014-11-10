@@ -103,7 +103,7 @@ function getTimetable() {
     }
 
     for (var i = 0; i < tts.length; i++) {
-      timetable.innerHTML += getHTML(tts[i]);
+      timetable.innerHTML += getTimetableHTML(tts[i]);
     }
   });
 
@@ -230,7 +230,7 @@ Timetable.prototype.doesNotConflict = function(course, otherCourses) {
   return true;
 };
 
-function getHTML(tt) {
+function getTimetableHTML(tt) {
 
   // Get json array of offering ids
   var offering_ids = [];
@@ -253,26 +253,20 @@ function getHTML(tt) {
 function getElectiveHtml(){
   var electives_html = '';
 
-  var SelectedTerm = get_selected_term();
-  if (SelectedTerm != null){
-    var elective_groups = get('electives.php', {program: get_selected_program()});
+  var current_groups = getCurrentElectiveGroups();
+  for (var group_i in current_groups){
 
-    // For each elective group, get electives for it
-    for(var i in elective_groups){
-      var group = elective_groups[i];
+    // Add group to HTML
+    var group = current_groups[group_i];
+    electives_html += '<h3>' + group.req_group + '</h3>';
 
-      if (group.year.toLowerCase() == SelectedTerm.year && group.term.toLowerCase() == SelectedTerm.term){
-        electives_html += '<h3>' + group.req_group + '</h3>';
-        var electives = get('electives.php', {group: group.req_group});
-
-        // For each elective in group, add it to html
-        for (var j in electives){
-          var elective = electives[j];
-          electives_html += '<input type="radio" name="' + group.req_group + '" value="' + elective.id + '"/>';
-          electives_html += elective.dept + ' ' + elective.code + ': ' + elective.name + '</div>';
-          electives_html += '</input><br/>';
-        }
-      }
+    // For each elective in group, add it to HTML
+    var electives = get('electives.php', {group: group.req_group});
+    for (var j in electives){
+      var elective = electives[j];
+      electives_html += '<input type="radio" name="' + group.req_group + '" value="' + elective.id + '"/>';
+      electives_html += elective.dept + ' ' + elective.code + ': ' + elective.name + '</div>';
+      electives_html += '</input><br/>';
     }
   }
 
@@ -281,6 +275,25 @@ function getElectiveHtml(){
   }
 
   return electives_html;
+}
+
+/* Gets only the elective groups that are available for the selected term. */
+function getCurrentElectiveGroups(){
+  var current_groups = [];
+
+  var SelectedTerm = get_selected_term();
+  if (SelectedTerm != null){
+    var elective_groups = get('electives.php', {program: get_selected_program()});
+    for(var i in elective_groups){
+      var group = elective_groups[i];
+
+      // if current elective group found, add it to array
+      if (group.year.toLowerCase() == SelectedTerm.year && group.term.toLowerCase() == SelectedTerm.term){
+        current_groups.push(group);
+      }
+    }
+  }
+  return current_groups;
 }
 
 /**
