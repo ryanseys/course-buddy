@@ -125,7 +125,6 @@ function getTimetable() {
       json: true
     }, function(resp) {
       timetable.innerHTML = '<br><b>Generating timetables...</b><br>';
-      console.log(resp);
       tt = new Timetable(resp);
       var tts = tt.generateAll();
 
