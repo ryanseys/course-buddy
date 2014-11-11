@@ -9,12 +9,12 @@ var enroll_button = document.getElementById("enroll_button");
 var electives_div = document.getElementById("electives");
 var tt;
 
-function checkForElectives() {
+function check_for_electives() {
   putElectiveHtml();
   elective_selection.style.display = "block";
 }
 
-function selectedTerm() {
+function selected_term() {
   elective_selection.style.display = 'none';
   timetable_selection.style.display = 'none';
   timetable.style.display = 'none';
