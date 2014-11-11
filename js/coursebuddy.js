@@ -2,6 +2,7 @@ var setupselect = document.getElementById('setupselect');
 var progcourses = document.getElementById('progcourses');
 var class_selection = document.getElementById('class_selection');
 var term_selection = document.getElementById('term_selection');
+var timetable_selection = document.getElementById('timetable_selection');
 var timetable = document.getElementById('timetable');
 var enroll_button = document.getElementById("enroll_button");
 var electives_div = document.getElementById("electives");
@@ -60,6 +61,9 @@ function get_courses(program_id, callback) {
 function setOnPattern() {
   timetable.innerHTML = '';
   class_selection.style.display = 'none';
+  elective_selection.style.display = 'none';
+  timetable_selection.style.display = 'none';
+  enroll_button.style.display = "none";
   term_selection.style.display = '';
 }
 
@@ -138,9 +142,9 @@ function getTimetable() {
 
     // Reveal timetable selector form
     enroll_button.style.display = "inline";
-    document.getElementById("timetable_selection").style.display = "block";
+    timetable.style.display = "block";
 
-    
+
   });
 
   return false;
@@ -148,6 +152,9 @@ function getTimetable() {
 
 function setOffPattern() {
   timetable.innerHTML = '';
+  elective_selection.style.display = 'none';
+  timetable_selection.style.display = 'none';
+  enroll_button.style.display = "none";
   term_selection.style.display = 'none';
   get_courses(get_selected_program(), function(courses) {
     var course;
