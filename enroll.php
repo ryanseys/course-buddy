@@ -46,6 +46,7 @@ function enroll($db, $offering_id){
             fclose($lockfile);
             break;
         }
+        usleep(100);
     }
     return json_encode($offering_data);
 }
