@@ -24,7 +24,7 @@ function get_program_courses_for_term($db, $program, $term, $year) {
       FROM offerings o
       INNER JOIN courses c
       ON c.id=o.course
-      WHERE o.term=\"$term\" AND o.course
+      WHERE o.term=\"$term\" AND capacity > 0 AND o.course
       IN (SELECT course
           FROM program_reqs
           WHERE program=$program AND term=\"$term\" AND year=$year
