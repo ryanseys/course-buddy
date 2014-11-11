@@ -14,8 +14,8 @@ $program = $db->escape_str($program);
 
 if ($pattern == 'on') {
     $courses = get_program_courses_for_term($db, $program, get_arg('term'), get_arg('year'));
-    // $electives = get_program_electives($db, $program);
-    echoAsJSON($courses);
+    $elective_offerings = get_offerings_of_courses($db, explode(",", get_arg('chosen_electives')));
+    echoAsJSON(array_merge($courses, $elective_offerings));
 } else if ($pattern == 'off') {
     $courses = get_arg('courses');
     // echo 'Courses: ' . $courses . '<br>';

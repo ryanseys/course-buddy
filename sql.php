@@ -32,4 +32,17 @@ function get_program_courses_for_term($db, $program, $term, $year) {
     return $db->executeToArray($sql);
 }
 
+function get_offerings_of_courses($db, $courses) {
+  $sql_course_list = implode(", ", array_map("intval", $courses));
+
+  $sql = ("
+    SELECT o.id, c.id AS course, type, seq, term, time_start, time_end, capacity, days, dept, code, name
+    FROM offerings o
+    INNER JOIN courses c
+    ON c.id=o.course
+    WHERE o.course IN ($sql_course_list);
+  ");
+  return $db->executeToArray($sql);
+}
+
 ?>

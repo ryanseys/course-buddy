@@ -7,6 +7,11 @@ var enroll_button = document.getElementById("enroll_button");
 var electives_div = document.getElementById("electives");
 var tt;
 
+function checkForElectives() {
+  putElectiveHtml();
+  document.getElementById("elective_selection").style.display = "block";
+}
+
 
 function get_programs(callback) {
   request({
@@ -96,32 +101,47 @@ function getTimetable() {
     return false;
   }
 
-  request({
-    method: 'get',
-    url: 'timetable.php',
-    data: data,
-    json: true
-  }, function(resp) {
-    timetable.innerHTML = '<br><b>Generating timetables...</b><br>';
-    tt = new Timetable(resp);
-    var tts = tt.generateAll();
-
-    if(tts.length === 0) {
-      timetable.innerHTML = '<br><b>There were no timetables found.</b><br>';
-    } else {
-      timetable.innerHTML = '';
+  data.chosen_electives = [];
+  _get_current_elective_group_names(get_selected_program(), function(group_names){
+    for (var i in group_names){
+      // Ensure that an elective was chosen for each group, and add to array
+      var selected_elective = _getSelectedElective(group_names[i]);
+      if (selected_elective){
+        data.chosen_electives.push(selected_elective);
+      } else {
+        alert("You have not selected an elective");
+        return false;
+      }
     }
 
-    for (var i = 0; i < tts.length; i++) {
-      timetable.innerHTML += getTimetableHTML(tts[i]);
-    }
+    request({
+      method: 'get',
+      url: 'timetable.php',
+      data: data,
+      json: true
+    }, function(resp) {
+      timetable.innerHTML = '<br><b>Generating timetables...</b><br>';
+      console.log(resp);
+      tt = new Timetable(resp);
+      var tts = tt.generateAll();
+
+      if(tts.length === 0) {
+        timetable.innerHTML = '<br><b>There were no timetables found.</b><br>';
+      } else {
+        timetable.innerHTML = '';
+      }
+
+      for (var i = 0; i < tts.length; i++) {
+        timetable.innerHTML += getTimetableHTML(tts[i]);
+      }
+    });
+
+    // Reveal timetable selector form
+    enroll_button.style.display = "inline";
+    document.getElementById("timetable_selection").style.display = "block";
+
+    
   });
-
-  // Reveal timetable selector form
-  enroll_button.style.display = "inline";
-
-  // Write Electives HTML
-  putElectiveHtml();
 
   return false;
 }
@@ -295,6 +315,8 @@ function putElectiveHtml(){
       // Add Elective Selector HTML to DOM
       if (electives_html){
         electives_div.innerHTML = '<h2>Select your Electives</h2>' + electives_html;
+      } else {
+        electives_div.innerHTML = "<h2>You have no Electives to select for this term.</h2>";
       }
     });
   });

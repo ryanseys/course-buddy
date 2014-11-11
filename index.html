@@ -31,22 +31,31 @@
         <input type="radio" name="term" value="f4"/>Fall - 4th Year<br>
         <input type="radio" name="term" value="w4" />Winter - 4th Year<br>
       </ul>
-    </div>
-    <div>
-    <button class="submitbtn" onclick="getTimetable()">Get timetable</button>
+
+      <div>
+        <button class="submitbtn" onclick="checkForElectives()">Check For Electives</button>
+      </div>
     </div>
 
-      <form id="form_enroll">
-        <div id="timetable"></div>
-
+    <div id="elective_selection" style="display:none">
+      <form id="form_electives">
         <div id="electives"></div>
-
-        <button id="enroll_button" type="button" class="submitbtn" onclick="enroll()" style="display: none;">Enroll in these Courses</button>
       </form>
+      <button class="submitbtn" onclick="getTimetable()">Generate Timetable Options</button>
+    </div>
 
-      <ul>
+    <form id="form_enroll">
+      <div id="timetable_selection" style="display:none">
+        <h2>Select your preferred Timetable</h2>
+      </div>
+      <div id="timetable"></div>
+
+      <button id="enroll_button" type="button" class="submitbtn" onclick="enroll()" style="display: none;">Enroll in these Courses</button>
+    </form>
+
+    <ul>
       <div id="results"></div>
-      </ul>
+    </ul>
 
     <script type="text/javascript" src="js/xhr_helper.js"></script>
     <script type="text/javascript" src="js/coursebuddy.js"></script>
