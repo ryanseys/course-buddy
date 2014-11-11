@@ -3,6 +3,7 @@ var progcourses = document.getElementById('progcourses');
 var class_selection = document.getElementById('class_selection');
 var term_selection = document.getElementById('term_selection');
 var timetable_selection = document.getElementById('timetable_selection');
+var elective_selection = document.getElementById('elective_selection');
 var timetable = document.getElementById('timetable');
 var enroll_button = document.getElementById("enroll_button");
 var electives_div = document.getElementById("electives");
@@ -10,7 +11,20 @@ var tt;
 
 function checkForElectives() {
   putElectiveHtml();
-  document.getElementById("elective_selection").style.display = "block";
+  elective_selection.style.display = "block";
+}
+
+function selectedTerm() {
+  elective_selection.style.display = 'none';
+  timetable_selection.style.display = 'none';
+  timetable.style.display = 'none';
+  enroll_button.style.display = 'none';
+}
+
+function selected_elective() {
+  timetable_selection.style.display = 'none';
+  enroll_button.style.display = 'none';
+  timetable.style.display = 'none';
 }
 
 
@@ -63,6 +77,7 @@ function setOnPattern() {
   class_selection.style.display = 'none';
   elective_selection.style.display = 'none';
   timetable_selection.style.display = 'none';
+  timetable.style.display = 'none';
   enroll_button.style.display = "none";
   term_selection.style.display = '';
 }
@@ -142,6 +157,7 @@ function getTimetable() {
     // Reveal timetable selector form
     enroll_button.style.display = "inline";
     timetable.style.display = "block";
+    timetable_selection.style.display = "block";
 
 
   });
@@ -153,6 +169,7 @@ function setOffPattern() {
   timetable.innerHTML = '';
   elective_selection.style.display = 'none';
   timetable_selection.style.display = 'none';
+  timetable.style.display = 'none';
   enroll_button.style.display = "none";
   term_selection.style.display = 'none';
   get_courses(get_selected_program(), function(courses) {
@@ -312,7 +329,7 @@ function putElectiveHtml(){
         // For each elective in this group, add its option to HTML
         for (var j in electives){
           var elective = electives[j];
-          electives_html += '<input type="radio" name="' + elective_group.req_group + '" value="' + elective.id + '"/>';
+          electives_html += '<input type="radio" name="' + elective_group.req_group + '" value="' + elective.id + '" onclick="selected_elective()"/>';
           electives_html += elective.dept + ' ' + elective.code + ': ' + elective.name + '</div>';
           electives_html += '<br/>';
         }
