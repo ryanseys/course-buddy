@@ -4,25 +4,41 @@ require_once ("db.php");
 require_once ("http_args.php");
 require_once ("json_responses.php");
 
+if (!isset($_POST['enroll_in'])){
+    echo error_json('expected enroll_in argument');
+}
+
 $db = new database();
+$offering_ids = json_decode($_POST['enroll_in']);
+$results = array();
 
-$offering_id = get_arg("offering");
+// Enroll in each course individually, and store results of each enrollment
+$db->conn->autoCommit(FALSE);
+foreach($offering_ids as $offering_id){
+    $result = enroll($db, $offering_id);
+    $results[$offering_id] = $result;
+}
+$db->conn->commit();
 
-if ($offering_id !== null) {
-    $offering_id = $db->escape_str($offering_id);
+echoAsJson($results);
+
+$db->close();
+
+function enroll($db, $offering_id){
+    $offering_data = get_offering_data($db, $offering_id);
 
     // Get existing offering capacity
     $cap = $db->execute("SELECT capacity from offerings WHERE id=$offering_id;")->fetch_assoc()["capacity"];
     if ($cap > 0) {
         $db->execute("UPDATE offerings SET capacity=capacity - 1 WHERE id=$offering_id;");
-        echo to_json("result", true);
+        $offering_data['success'] = true;
     } else {
-        echo to_json("result", false);
+         $offering_data['success'] = false;
     }
-} else {
-    echo error_json("Please specify an offering id");
+    return json_encode($offering_data);
 }
 
-$db->close();
-
+function get_offering_data($db, $offering_id){
+    return $db->execute("SELECT c.dept, c.code, c.name, o.seq FROM offerings o INNER JOIN courses c ON c.id = o.course WHERE o.id=$offering_id;")->fetch_assoc();
+}
 ?>

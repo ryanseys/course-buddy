@@ -6,7 +6,7 @@
  * @param  {object} obj key value pair for building querystring.
  * @return {[type]}     the built query string or empty string.
  */
-function querystring(obj) {
+function _querystring(obj) {
   obj = obj || {};
   var str = '';
   var keys = Object.keys(obj);
@@ -25,28 +25,17 @@ function request(options, callback) {
   options = options || {};
   var req = new XMLHttpRequest();
   var data = options.data || {};
-  var qs = querystring(data);
+  var qs = _querystring(data);
   var method = options.method.toLowerCase();
   var url = method === 'get' ? options.url + '?' + qs : options.url;
   var j = !!options.json;
 
-  console.log('requesting:', method, url);
+  console.log('AJAX requesting:', method, url);
   req.open(method, url, true);
   if (options.urlencode)
     req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
   req.onload = function() {
-    if (j) {
-      var jdata;
-      try {
-        jdata = JSON.parse(this.responseText);
-      } catch(e) {
-        console.log(e, ' Could not parse as JSON: ' + this.responseText);
-        jdata = [];
-      }
-      callback(jdata);
-    } else {
-      callback(this.responseText);
-    }
+    callback(j ? _parse_response(this) : this.responseText);
   };
 
   if(method === 'post') {
@@ -54,4 +43,14 @@ function request(options, callback) {
   } else {
     req.send();
   }
+}
+
+function _parse_response(resp){
+ var jdata = [];
+  try {
+    jdata = JSON.parse(resp.responseText);
+  } catch(e) {
+    console.log(e, ' Could not parse as JSON: ' + resp.responseText);
+  }
+  return jdata;
 }

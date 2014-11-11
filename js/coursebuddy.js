@@ -3,6 +3,8 @@ var progcourses = document.getElementById('progcourses');
 var class_selection = document.getElementById('class_selection');
 var term_selection = document.getElementById('term_selection');
 var timetable = document.getElementById('timetable');
+var enroll_button = document.getElementById("enroll_button");
+var electives_div = document.getElementById("electives");
 var tt;
 
 
@@ -14,8 +16,28 @@ function get_programs(callback) {
   }, callback);
 }
 
+function _get_electives(group_names, callback){
+  request({
+    method: 'get',
+    url: 'electives.php',
+    json: true,
+    urlencode: true,
+    data: {groups: JSON.stringify(group_names)}
+  }, callback);
+}
+
 function get_selected_program() {
   return setupselect.options[setupselect.selectedIndex].value;
+}
+
+function get_selected_term(){
+  var term = document.querySelector('input[name="term"]:checked');
+  if(term && term.value) {
+    term = term.value.split('');
+    return {"year": term[1], "term": term[0]};
+  }
+  alert('You must select a term!');
+  return null;
 }
 
 function get_courses(program_id, callback) {
@@ -91,9 +113,15 @@ function getTimetable() {
     }
 
     for (var i = 0; i < tts.length; i++) {
-      timetable.innerHTML += getHTML(tts[i]);
+      timetable.innerHTML += getTimetableHTML(tts[i]);
     }
   });
+
+  // Reveal timetable selector form
+  enroll_button.style.display = "inline";
+
+  // Write Electives HTML
+  putElectiveHtml();
 
   return false;
 }
@@ -212,8 +240,16 @@ Timetable.prototype.doesNotConflict = function(course, otherCourses) {
   return true;
 };
 
-function getHTML(tt) {
-  var str = '<div><ul>';
+function getTimetableHTML(tt) {
+
+  // Get json array of offering ids
+  var offering_ids = [];
+  for (var i in tt){
+    offering_ids.push(tt[i].id);
+  }
+  offering_ids = JSON.stringify(offering_ids);
+
+  var str = '<div><input type="radio" name="enroll_in" value=' + offering_ids + '></input>Select this Timetable<ul>';
 
   for(var i = 0; i < tt.length; i++) {
     var offer = tt[i];
@@ -224,13 +260,70 @@ function getHTML(tt) {
   return str;
 }
 
-function initArray(length, value) {
-  var arr = [], i = 0;
-  arr.length = length;
-  while (i < length) {
-    arr[i++] = value;
+function putElectiveHtml(){
+  // Get names of current elective group
+  var current_groups = [];
+
+  var SelectedTerm = get_selected_term();
+  if (SelectedTerm === null){
+    return;
   }
-  return arr;
+
+  // Get the names of the elective groups for this program for this term
+  _get_current_elective_group_names(get_selected_program(), function(group_names){
+
+    // Using group names for this term, get the lists of possible electives for each group
+    _get_electives(group_names, function(elective_groups) {
+      var electives_html = '';
+
+      // For Each Elective Group, build course selection HTML
+      for (var i in elective_groups){
+        var elective_group = elective_groups[i];
+        var electives = elective_group.electives;
+
+        electives_html += '<h3>' + elective_group.req_group + '</h3>';
+
+        // For each elective in this group, add its option to HTML
+        for (var j in electives){
+          var elective = electives[j];
+          electives_html += '<input type="radio" name="' + elective_group.req_group + '" value="' + elective.id + '"/>';
+          electives_html += elective.dept + ' ' + elective.code + ': ' + elective.name + '</div>';
+          electives_html += '<br/>';
+        }
+      }
+
+      // Add Elective Selector HTML to DOM
+      if (electives_html){
+        electives_div.innerHTML = '<h2>Select your Electives</h2>' + electives_html;
+      }
+    });
+  });
+}
+
+/* Gets only the elective groups that are available for the selected term. */
+function _get_current_elective_group_names(program_id, callback){
+  var SelectedTerm = get_selected_term();
+  if (SelectedTerm != null){
+    request({
+      method: 'get',
+      url: 'electives.php',
+      json: true,
+      data: {program: program_id}
+    }, function(elective_groups){
+
+      // Get group names for current term
+      var group_names = [];
+      for(var i in elective_groups){
+        var group = elective_groups[i];
+        if (group.year.toLowerCase() === SelectedTerm.year && group.term.toLowerCase() === SelectedTerm.term){
+          group_names.push(group.req_group);
+        }
+      }
+
+      // Send group names to callback function
+      callback(group_names);
+    });
+  }
 }
 
 /**
