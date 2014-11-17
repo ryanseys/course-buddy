@@ -92,7 +92,7 @@ File.open('cses.sql', 'w') { |sql|
 	sql.write("COMMIT;\n")
 }
 
-all_files = ["init.sql", "courses.sql", "offerings.sql", "cses.sql", "se_tree.sql"]
+all_files = ["init.sql", "courses.sql", "offerings.sql", "cses.sql", "se_tree.sql", "prereqs.sql"]
 
 File.open( "install.sql", "w" ){ |file_out|
   all_files.each { |f_name|
