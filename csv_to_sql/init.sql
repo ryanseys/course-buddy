@@ -36,6 +36,15 @@ CREATE TABLE prereqs(
   equiv_group int COMMENT 'Assign same id to a group of courses which would satisfy the same prereq'
 );
 
+-- program requirements to take a course
+DROP TABLE IF EXISTS course_program_reqs;
+CREATE TABLE course_program_reqs(
+  id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  course int REFERENCES courses(id),
+  program int REFERENCES programs(id),
+  year_standing int
+);
+
 -- -----------
 -- Programs --
 -- -----------
