@@ -173,7 +173,19 @@ CREATE TABLE program_elective_groups(
 | How does your software determine if the student can take or not SYSC 2006?   |
 +------------------------------------------------------------------------------+
 
-<TODO>
+There is a table called course_program_reqs which is created with the following
+SQL statement:
+CREATE TABLE course_program_reqs(
+  id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  course int REFERENCES courses(id),
+  program int REFERENCES programs(id),
+  year_standing int
+);
+
+For each course that has a year-standing requirement, the requirement is held in
+this table.
+
+<TODO, how these requirements are enforced>
 
 +------------------------------------------------------------------------------+
 | 8. Explain briefly the rules (or algorithms) you use when building the       |
