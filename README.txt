@@ -38,7 +38,10 @@ Ryan Seys:
 
 Andrew O'Hara
 
-<TODO>
+- Developed Database Schema
+- Developed Ruby parser to generate course and CSE SQL
+- Manual SQL creation
+- Developed elective selection frontend and course enrollment functionality
 
 Caleb Simpson
 
