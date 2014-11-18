@@ -73,9 +73,9 @@ available in the /css folder.
 | the format of data to provide to your application (for each academic        |
 | program, for the prerequisite trees, for the complementary studies          |
 | electives, for the basic science electives, for the (breadth) engineering   |
-| electives ? What files in yourm project will need to be modified to include |
-| all Engineering programs ? Briefly, describe the changes that must be done  |
-| in the code?                                                                |
+| electives ? What files in your project will need to be modified to include  |
+| all Engineering programs? Briefly, describe the changes that must be done   |
+| in the code.                                                                |
 +-----------------------------------------------------------------------------+
 
 No changes to the program (PHP / JS) should be required to support all
