@@ -142,8 +142,7 @@ function getTimetable() {
       data: data,
       json: true
     }, function(resp) {
-        tt = new Timetable(resp);
-        var tts = tt.generateAll();
+        var tts = generateAll(resp);
 
         timetable.innerHTML = (tts.length === 0 ? '<br><b>There were no timetables found.</b><br>' : '');
 
@@ -196,11 +195,7 @@ getPrograms(function(programs) {
   }
 });
 
-function Timetable(offerings) {
-  this.offerings = offerings || [];
-}
-
-Timetable.prototype._getClasses = function(offerings) {
+function getClasses(offerings) {
   var courseBucket = {};
   var o = offerings || [];
   for (var i = 0; i < o.length; i++) {
@@ -226,7 +221,7 @@ function getTimes(course) {
   };
 }
 
-Timetable.prototype.doesNotConflict = function(course, otherCourses) {
+function doesNotConflict(course, otherCourses) {
   var courseTimes = getTimes(course);
   var timeStart = courseTimes.start;
   var timeEnd = courseTimes.end;
@@ -374,7 +369,7 @@ function getElectiveGroupNames(program_id, callback) {
 /**
  * Generates potential timetable by adding all the classes based on indexes.
  */
-Timetable.prototype.getTimetable = function(classes, indexes) {
+function generateTimetable(classes, indexes) {
   var timetable = [];
   for (var i = 0; i < indexes.length; i++) {
     var classIndex = indexes[i][0] - 1;
@@ -385,13 +380,13 @@ Timetable.prototype.getTimetable = function(classes, indexes) {
   return timetable;
 };
 
-Timetable.prototype.isConflictFree = function(timetable) {
+function isConflictFree(timetable) {
   var tt = timetable.slice(0); // copy the timetable
   var count = 0;
   var len = tt.length;
   while (count !== len) {
     var offer = tt.shift();
-    if (!this.doesNotConflict(offer, tt)) {
+    if (!doesNotConflict(offer, tt)) {
       return false;
     }
     tt.push(offer);
@@ -414,11 +409,11 @@ function increaseIndexes(indexes) {
   return newindexes;
 }
 
-Timetable.prototype.generateAll = function() {
+function generateAll(offerings) {
   var timetables = [];
   var aTimetable = [];
   var indexes = [];
-  var classes = this._getClasses(this.offerings);
+  var classes = getClasses(offerings);
 
   for (var i = 0; i < classes.length; i++) {
     indexes.push([0, classes[i].length]);
@@ -426,9 +421,9 @@ Timetable.prototype.generateAll = function() {
 
   while (indexes[0][0] !== indexes[0][1]) {
     indexes = increaseIndexes(indexes);
-    var tt = this.getTimetable(classes, indexes);
+    var tt = generateTimetable(classes, indexes);
 
-    if (this.isConflictFree(tt)) {
+    if (isConflictFree(tt)) {
       timetables.push(tt);
     }
   }
