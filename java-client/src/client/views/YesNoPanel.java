@@ -13,6 +13,14 @@ import javax.swing.JRadioButton;
 
 import client.listeners.YesNoListener;
 
+/**
+ * Panel for interacting with a Radio Button Group.
+ * 
+ * Offers setters and getters, and the means to add a listener
+ * for selection events.
+ * 
+ * @author Andrew O'Hara
+ */
 public class YesNoPanel implements ViewComponent {
 	
 	private JPanel panel = new JPanel();

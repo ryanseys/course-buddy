@@ -6,6 +6,13 @@ import client.controllers.MainViewController;
 import client.models.Constants;
 import client.views.MainView;
 
+/**
+ * Main Class for Running the Application.
+ * 
+ * Configures frame, and attaches all listeners to the views.
+ * 
+ * @author Andrew O'Hara
+ */
 public class Client {
 	
 	public static void main(String[] args){

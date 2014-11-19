@@ -25,6 +25,18 @@ import client.listeners.YesNoListener;
 import client.models.Course;
 import client.models.Program;
 
+/**
+ * Main View for the Application.
+ * 
+ * Holds all of the components for the main views and contains an intermediary
+ * listener for interpreting GUI events and converting them to more concrete
+ * events to the listening controllers.
+ * 
+ * For example, if the user selects a program, then the intermediary listener
+ * will inform the ProgramListener that the program has changed.
+ * 
+ * @author Andrew O'Hara
+ */
 public class MainView implements ViewComponent, ProgramListener, CourseListener, YesNoListener {
 	
 	private final Collection<ProgramListener> programListeners = new LinkedList<>();

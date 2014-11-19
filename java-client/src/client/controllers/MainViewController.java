@@ -18,6 +18,20 @@ import client.models.Program;
 
 import com.google.gson.JsonElement;
 
+/**
+ * This is the Controller for communicating with the MainView.
+ * 
+ * It implements several listeners for communication with the view
+ * and collects all the information that the user enters on the view.
+ * 
+ * Some events will result in the controller making synchronous API
+ * calls to the server, and then sending those results back to the view.
+ * 
+ * When the user clicks submit, this gathers all the information and
+ * presents it to the user in the form of a JDialog.
+ * 
+ * @author Andrew O'Hara
+ */
 public class MainViewController implements ProgramListener, CourseListener, YesNoListener, SubmitListener {
 	
 	private final Collection<ProgramListener> programListeners = new LinkedList<>();

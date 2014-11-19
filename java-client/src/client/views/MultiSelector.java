@@ -9,6 +9,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.event.ListSelectionListener;
 
+/**
+ * Wraps a JList, allowing for simple multi-selection in a scrollable panel.
+ * 
+ * @author Andrew O'Hara
+ * 
+ * @param <T> type of object to store in the list
+ */
 public class MultiSelector<T> implements ViewComponent {
 	
 	private final DefaultListModel<T> model;

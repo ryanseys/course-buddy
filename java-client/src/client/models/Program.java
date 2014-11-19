@@ -6,6 +6,11 @@ import java.util.List;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+/**
+ * Contains Course Data and serialization logic.
+ * 
+ * @author Andrew O'Hara
+ */
 public class Program {
 	
 	public final int id;
