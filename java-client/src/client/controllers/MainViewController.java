@@ -28,6 +28,7 @@ public class MainViewController implements ProgramListener, CourseListener, YesN
 	private Collection<Course> coursesTaken = new LinkedList<>();
 	private Program selectedProgram;
 	private Boolean onPattern;
+	private String onPatternTerm;
 	
 	public void refresh(){
 		try {
@@ -82,6 +83,8 @@ public class MainViewController implements ProgramListener, CourseListener, YesN
 			message.append("Program: ").append(selectedProgram).append("\n");
 			message.append("On Pattern: ").append(onPattern).append("\n");
 			message.append("\n");
+			message.append("On Pattern Term: ").append(onPatternTerm).append("\n");
+			message.append("\n");
 			message.append("Courses Taken:\n");
 			message.append("\n");
 			for (Course course : coursesTaken){
@@ -112,8 +115,7 @@ public class MainViewController implements ProgramListener, CourseListener, YesN
 		}
 	}
 
-	
-
-	
-
+	public void selectOnPatternTerm(String term){
+		onPatternTerm = term;
+	}
 }
