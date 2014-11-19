@@ -6,57 +6,80 @@
   </head>
   <body>
     <img class="culogo" src="img/carleton_logo.png">
-    <h1>Course Buddy - Carleton U Course Scheduling Tool</h1>
-    <h2>Select your program: </h2>
-    <select id="setupselect" form="setupform"></select>
+    <h1 class="title">Course Buddy</h1>
+    <div class="headline">Carleton University course timetables made easy.</div>
 
-    <h2>Are you on-pattern or off-pattern?</h2>
-    <input type="radio" name="pattern" value="on" onclick="setOnPattern()"/>On pattern
-    <input type="radio" name="pattern" value="off" onclick="setOffPattern()"/>Off pattern
+    <div class="selectprog">
+      <h2>I am currently studying...</h2>
+      <select id="setupselect" form="setupform"></select>
+    </div>
+    <div class="selectpattern">
+      <h2>and I have completed my courses...</h2>
+      <input type="radio" name="pattern" value="on" onclick="setOnPattern()"/>On pattern
+      <input type="radio" name="pattern" value="off" onclick="setOffPattern()"/>Off pattern
+    </div>
 
-    <div id='class_selection' style="display:none;">
+    <div id='class_selection' class="selectclasses" style="display:none;">
       <h2>What classes have you taken?</h2>
       <ul id='progcourses'></ul>
     </div>
 
-    <div id='term_selection' style="display:none;">
+    <div id='term_selection' class="selectterm" style="display:none;">
       <h2>What term do you want to generate a timetable for?</h2>
-      <ul id='terms'>
-        <input type="radio" name="term" value="f1" onclick="selected_term()" />Fall - 1st Year<br>
-        <input type="radio" name="term" value="w1" onclick="selected_term()" />Winter - 1st Year<br>
-        <input type="radio" name="term" value="f2" onclick="selected_term()"/>Fall - 2nd Year<br>
-        <input type="radio" name="term" value="w2" onclick="selected_term()" />Winter - 2nd Year<br>
-        <input type="radio" name="term" value="f3" onclick="selected_term()"/>Fall - 3rd Year<br>
-        <input type="radio" name="term" value="w3" onclick="selected_term()" />Winter - 3rd Year<br>
-        <input type="radio" name="term" value="f4" onclick="selected_term()"/>Fall - 4th Year<br>
-        <input type="radio" name="term" value="w4" onclick="selected_term()" />Winter - 4th Year<br>
-      </ul>
-
-      <div>
-        <button class="submitbtn" onclick="check_for_electives()">Check For Electives</button>
-      </div>
+      <table id='terms'>
+        <tr>
+          <td><input type="radio" name="term" value="f1" onclick="checkForElectives()" /></td>
+          <td>Fall - 1st Year</td>
+        </tr>
+        <tr>
+          <td><input type="radio" name="term" value="w1" onclick="checkForElectives()" /></td>
+          <td>Winter - 1st Year</td>
+        </tr>
+        <tr>
+          <td><input type="radio" name="term" value="f2" onclick="checkForElectives()"/></td>
+          <td>Fall - 2nd Year</td>
+        </tr>
+        <tr>
+          <td><input type="radio" name="term" value="w2" onclick="checkForElectives()" /></td>
+          <td>Winter - 2nd Year</td>
+        </tr>
+        <tr>
+          <td><input type="radio" name="term" value="f3" onclick="checkForElectives()"/></td>
+          <td>Fall - 3rd Year</td>
+        </tr>
+        <tr>
+          <td><input type="radio" name="term" value="w3" onclick="checkForElectives()" /></td>
+          <td>Winter - 3rd Year</td>
+        </tr>
+        <tr>
+          <td><input type="radio" name="term" value="f4" onclick="checkForElectives()"/></td>
+          <td>Fall - 4th Year</td>
+        </tr>
+        <tr>
+          <td><input type="radio" name="term" value="w4" onclick="checkForElectives()" /></td>
+          <td>Winter - 4th Year</td>
+        </tr>
+      </table>
     </div>
 
-    <div id="elective_selection" style="display:none">
+    <div id="elective_selection" class="selectelectives" style="display:none">
       <form id="form_electives">
         <div id="electives"></div>
       </form>
-      <button class="submitbtn" onclick="getTimetable()">Generate Timetable Options</button>
     </div>
 
     <form id="form_enroll">
       <div id="timetable_selection" style="display:none">
-        <h2>Select your preferred Timetable</h2>
+        <h2>Select your preferred timetable below</h2>
+        <div id="timetable"></div>
       </div>
-      <div id="timetable"></div>
-
       <button id="enroll_button" type="button" class="submitbtn" onclick="enroll()" style="display: none;">Enroll in these Courses</button>
     </form>
 
     <ul>
       <div id="results"></div>
     </ul>
-
+    <footer class="footer">Developed by Ryan Seys, Andrew O'Hara and Caleb Simpson</footer>
     <script type="text/javascript" src="js/xhr_helper.js"></script>
     <script type="text/javascript" src="js/coursebuddy.js"></script>
     <script type="text/javascript" src="js/enroll.js"></script>
