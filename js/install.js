@@ -1,18 +1,18 @@
 function install() {
   add_message("Installing coursebuddy...", true);
+  add_message("<span id='spinner'><img src='img/spinner.gif' /> Please wait, this will take a moment....</span>", true)
   request({
     method: 'post',
-    url:'install.php', 
-    urlencode: true,
-    data: {
-      host: document.getElementById('host').value,
-      port: document.getElementById('port').value,
-      username: document.getElementById('username').value,
-      password: document.getElementById('password').value
-    }
+    url:'install.php'
   }, function(result) {
-    add_message(result, true);
-    setTimeout(function() { window.location = "index.html"}, 5000);
+    document.getElementById('spinner').style.display = 'none';
+    if (result.indexOf('fail') != -1) {
+      add_message("Coursebuddy installation ran into a problem, going to retry:", true);
+      install();
+    } else {
+      add_message(result, true);
+      setTimeout(function() { window.location = "index.html"}, 2000);
+    }
   });
 }
 
@@ -23,7 +23,7 @@ function uninstall() {
     url: 'uninstall.php',
   }, function(result) {
     add_message(result, false);
-    setTimeout(function() { window.location = "install.html"}, 5000);
+    setTimeout(function() { window.location = "install.html"}, 2000);
   });
 }
 
