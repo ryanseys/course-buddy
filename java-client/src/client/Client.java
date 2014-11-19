@@ -16,7 +16,7 @@ public class Client {
 		JFrame frame = new JFrame(Constants.APP_NAME);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(mainView.getComponent());
-		frame.setSize(300, 400);
+		frame.setSize(350, 400);
 		
 		// setup controllers
 		MainViewController mainViewController = new MainViewController();
