@@ -1,5 +1,6 @@
 package client.views;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -8,13 +9,12 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.swing.BoxLayout;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -51,24 +51,25 @@ public class MainView implements ViewComponent, ProgramListener, CourseListener,
 	
 	public MainView(){
 		// Init Components
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setLayout(new BorderLayout());
 		
-		panel.add(new JLabel("Select Your program"));
-		panel.add(programSelector);
+		JPanel programPanel = new JPanel();
+		programPanel.setBorder(BorderFactory.createRaisedBevelBorder());
+		programPanel.add(new JLabel("Select Your program"));
+		programPanel.add(programSelector);
+		panel.add(programPanel, BorderLayout.NORTH);
 		
-		addSeparator();
+		JPanel courseQuestionPanel = new JPanel();
+		courseQuestionPanel.add(new JLabel("Are you on-pattern?"));
+		courseQuestionPanel.add(onPatternChooser.getComponent());
 		
-		panel.add(new JLabel("Are you on-pattern?"));
-		panel.add(onPatternChooser.getComponent());
-
-		addSeparator();
-		
-		panel.add(courseInputPanel);
-
-		addSeparator();
+		JPanel coursePanel = new JPanel(new BorderLayout());
+		coursePanel.add(courseQuestionPanel, BorderLayout.NORTH);
+		coursePanel.add(courseInputPanel, BorderLayout.CENTER);
+		panel.add(coursePanel, BorderLayout.CENTER);
 		
 		JButton submitButton = new JButton("Build Timetable");
-		panel.add(submitButton);
+		panel.add(submitButton, BorderLayout.SOUTH);
 		
 		// Setup Term Selector
 		termSelector.addItem(null);
@@ -91,12 +92,6 @@ public class MainView implements ViewComponent, ProgramListener, CourseListener,
 	}
 	
 	// GUI Methods
-	
-	private final void addSeparator(){
-		panel.add(new JPanel());
-		panel.add(new JSeparator(JSeparator.HORIZONTAL));
-		panel.add(new JPanel());
-	}
 	
 	@Override
 	public JComponent getComponent() {
@@ -154,7 +149,8 @@ public class MainView implements ViewComponent, ProgramListener, CourseListener,
 			courseInputPanel.add(new JLabel("What Courses have you taken?"));
 			courseInputPanel.add(coursesSelector.getComponent());
 		}
-		panel.validate();
+		panel.revalidate();
+		panel.repaint();
 	}
 	
 	@Override
