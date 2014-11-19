@@ -174,11 +174,13 @@ function setOffPattern() {
       course = courses[i];
       var li = document.createElement('li');
       var li_input = document.createElement('input');
+      var label = document.createElement('label');
       li_input.value = course.id;
       li_input.type = 'checkbox';
       li_input.name = 'course';
-      li.appendChild(li_input);
-      li.innerHTML += ' ' + course.dept + ' ' + course.code + ' - ' + course.name;
+      label.appendChild(li_input);
+      label.innerHTML += ' ' + course.dept + ' ' + course.code + ' - ' + course.name;
+      li.appendChild(label);
       progcourses.appendChild(li);
     }
     class_selection.style.display = '';
