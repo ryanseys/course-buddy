@@ -1,30 +1,10 @@
 <?php
 
+require_once ("db.php");
+
 error_reporting(E_ALL & ~E_NOTICE);
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
-    // Save the provided credentials permanently to the config file.
-    $host = addslashes($_POST['host']);
-    $port = addslashes($_POST['port']);
-    $username = addslashes($_POST['username']);
-    $password = addslashes($_POST['password']);
-
-    $new_config = "<?php
-      define('MYSQL_HOST', '$host');
-      define('MYSQL_PORT', '$port');
-      define('MYSQL_USER', '$username');
-      define('MYSQL_PASSWORD', '$password');
-      define('MYSQL_DATABASE', 'coursebuddy');
-    ?>";
-
-    $config_file = fopen("config.php", "w");
-    ftruncate($config_file, 0);
-    fwrite($config_file, $new_config);
-    fclose($config_file);
-
-    // Only load the db (and by extension config) after it has been created.
-    require_once ("db.php");
+if ($_SERVER['REQUEST_METHOD'] == 'POST') { 
 
     // connect, regardless of whether database exists created or not
     $db = new database();

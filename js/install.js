@@ -1,15 +1,8 @@
 function install() {
-  add_message("Installing coursebuddy...", true);
+  add_message("Installing coursebuddy...Please wait, this will take a momemnt....", true);
   request({
     method: 'post',
-    url:'install.php', 
-    urlencode: true,
-    data: {
-      host: document.getElementById('host').value,
-      port: document.getElementById('port').value,
-      username: document.getElementById('username').value,
-      password: document.getElementById('password').value
-    }
+    url:'install.php'
   }, function(result) {
     add_message(result, true);
     setTimeout(function() { window.location = "index.html"}, 5000);
