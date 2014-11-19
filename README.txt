@@ -40,6 +40,7 @@ Andrew O'Hara
 
 - Developed Database Schema
 - Developed Ruby parser to generate course and CSE SQL
+- Developed Java View
 - Manual SQL creation
 - Developed elective selection frontend and course enrollment functionality
 
