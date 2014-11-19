@@ -287,7 +287,7 @@ function getTimetableHTML(tt) {
   }
   offering_ids = JSON.stringify(offering_ids);
 
-  var str = '<div><input type="radio" name="enroll_in" value=' + offering_ids + '></input>Select this Timetable<ul>';
+  var str = '<div><label><input type="radio" name="enroll_in" value=' + offering_ids + '></input>Select this Timetable</label><ul>';
 
   for (var i = 0; i < tt.length; i++) {
     var offer = tt[i];
