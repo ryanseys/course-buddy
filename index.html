@@ -28,49 +28,44 @@
       <h2>What term do you want to generate a timetable for?</h2>
       <table id='terms'>
         <tr>
-          <td><input type="radio" name="term" value="f1" onclick="check_for_electives()" /></td>
+          <td><input type="radio" name="term" value="f1" onclick="checkForElectives()" /></td>
           <td>Fall - 1st Year</td>
         </tr>
         <tr>
-          <td><input type="radio" name="term" value="w1" onclick="check_for_electives()" /></td>
+          <td><input type="radio" name="term" value="w1" onclick="checkForElectives()" /></td>
           <td>Winter - 1st Year</td>
         </tr>
         <tr>
-          <td><input type="radio" name="term" value="f2" onclick="check_for_electives()"/></td>
+          <td><input type="radio" name="term" value="f2" onclick="checkForElectives()"/></td>
           <td>Fall - 2nd Year</td>
         </tr>
         <tr>
-          <td><input type="radio" name="term" value="w2" onclick="check_for_electives()" /></td>
+          <td><input type="radio" name="term" value="w2" onclick="checkForElectives()" /></td>
           <td>Winter - 2nd Year</td>
         </tr>
         <tr>
-          <td><input type="radio" name="term" value="f3" onclick="check_for_electives()"/></td>
+          <td><input type="radio" name="term" value="f3" onclick="checkForElectives()"/></td>
           <td>Fall - 3rd Year</td>
         </tr>
         <tr>
-          <td><input type="radio" name="term" value="w3" onclick="check_for_electives()" /></td>
+          <td><input type="radio" name="term" value="w3" onclick="checkForElectives()" /></td>
           <td>Winter - 3rd Year</td>
         </tr>
         <tr>
-          <td><input type="radio" name="term" value="f4" onclick="check_for_electives()"/></td>
+          <td><input type="radio" name="term" value="f4" onclick="checkForElectives()"/></td>
           <td>Fall - 4th Year</td>
         </tr>
         <tr>
-          <td><input type="radio" name="term" value="w4" onclick="check_for_electives()" /></td>
+          <td><input type="radio" name="term" value="w4" onclick="checkForElectives()" /></td>
           <td>Winter - 4th Year</td>
         </tr>
       </table>
-
-      <div>
-        <!-- <button class="submitbtn" onclick="check_for_electives()">Check For Electives</button> -->
-      </div>
     </div>
 
     <div id="elective_selection" class="selectelectives" style="display:none">
       <form id="form_electives">
         <div id="electives"></div>
       </form>
-      <!-- <button class="submitbtn" onclick="getTimetable()">Generate Timetable Options</button> -->
     </div>
 
     <form id="form_enroll">
@@ -84,7 +79,7 @@
     <ul>
       <div id="results"></div>
     </ul>
-
+    <footer class="footer">Developed by Ryan Seys, Andrew O'Hara and Caleb Simpson</footer>
     <script type="text/javascript" src="js/xhr_helper.js"></script>
     <script type="text/javascript" src="js/coursebuddy.js"></script>
     <script type="text/javascript" src="js/enroll.js"></script>

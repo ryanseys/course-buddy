@@ -10,7 +10,7 @@ var electives_div = document.getElementById("electives");
 var electives_form = document.getElementById("form_electives");
 var tt;
 
-function check_for_electives() {
+function checkForElectives() {
   putElectiveHtml();
   elective_selection.style.display = '';
 }
@@ -59,7 +59,7 @@ function getSelectedTerm() {
   return null;
 }
 
-function get_courses(program_id, callback) {
+function getCourses(program_id, callback) {
   var data = {
     program: program_id
   };
@@ -129,11 +129,6 @@ function getTimetable() {
       var selected_elective = getSelectedElective(group_names[i]);
       if (selected_elective) {
         data.chosen_electives.push(selected_elective);
-      } else {
-        // we shouldn't require them to have an elective
-
-        // alert("You have not selected an elective");
-        // return false;
       }
     }
 
@@ -150,21 +145,13 @@ function getTimetable() {
         tt = new Timetable(resp);
         var tts = tt.generateAll();
 
-        if (tts.length === 0) {
-          timetable.innerHTML = '<br><b>There were no timetables found.</b><br>';
-        } else {
-          timetable.innerHTML = '';
-        }
+        timetable.innerHTML = (tts.length === 0 ? '<br><b>There were no timetables found.</b><br>' : '');
 
         for (var i = 0; i < tts.length; i++) {
           timetable.innerHTML += getTimetableHTML(tts[i]);
         }
 
-        if (tts.length !== 0) {
-          enroll_button.style.display = 'inline';
-        } else {
-          enroll_button.style.display = 'none';
-        }
+        enroll_button.style.display = (tts.length === 0 ? 'none' : 'inline');
         timetable.style.display = '';
         timetable_selection.style.display = '';
       });
@@ -180,7 +167,7 @@ function setOffPattern() {
   timetable.style.display = 'none';
   enroll_button.style.display = "none";
   term_selection.style.display = 'none';
-  get_courses(getSelectedProgram(), function(courses) {
+  getCourses(getSelectedProgram(), function(courses) {
     var course;
     progcourses.innerHTML = '';
     for (var i = 0; i < courses.length; i++) {
@@ -340,7 +327,6 @@ function putElectiveHtml() {
           var elective = electives[j];
           electives_html += '<option name="' + elective_group.req_group + '" value="' + elective.id + '"/>' +
           elective.dept + ' ' + elective.code + ': ' + elective.name + '</option>';
-          // electives_html += '<td>'  '</td></tr>';
         }
 
         electives_html += '</select>';
@@ -377,7 +363,6 @@ function getElectiveGroupNames(program_id, callback) {
             group_names.push(group.req_group);
           }
         }
-
         // Send group names to callback function
         callback(group_names);
       });
