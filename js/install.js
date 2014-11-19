@@ -1,13 +1,18 @@
 function install() {
   add_message("Installing coursebuddy...", true);
-  add_message("<span id='spinner'><img src='img/spinner.gif' /> Please wait, this will take a momemnt....</span>", true)
+  add_message("<span id='spinner'><img src='img/spinner.gif' /> Please wait, this will take a moment....</span>", true)
   request({
     method: 'post',
     url:'install.php'
   }, function(result) {
     document.getElementById('spinner').style.display = 'none';
-    add_message(result, true);
-    setTimeout(function() { window.location = "index.html"}, 2000);
+    if (result.indexOf('fail') != -1) {
+      add_message("Coursebuddy installation ran into a problem, going to retry:", true);
+      install();
+    } else {
+      add_message(result, true);
+      setTimeout(function() { window.location = "index.html"}, 2000);
+    }
   });
 }
 

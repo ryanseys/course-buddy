@@ -25,11 +25,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $install_sql = fread($installfile, filesize("csv_to_sql/install.sql"));
     if (!$db->execute_multi($install_sql)) {
         echo "Multi query failed: (" . $db->getError() . ") ";
+    } else {
+        echo "Done! You will be redirected shortly...";
     }
     fclose($installfile);
     $db->close();
-
-    echo "Done! You will be redirected shortly...";
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
