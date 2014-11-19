@@ -15,8 +15,8 @@
     </div>
     <div class="selectpattern">
       <h2>and I have completed my courses...</h2>
-      <input type="radio" name="pattern" value="on" onclick="setOnPattern()"/>On pattern
-      <input type="radio" name="pattern" value="off" onclick="setOffPattern()"/>Off pattern
+      <label><input type="radio" name="pattern" value="on" onclick="setOnPattern()"/>On pattern</label>
+      <label><input type="radio" name="pattern" value="off" onclick="setOffPattern()"/>Off pattern</label>
     </div>
 
     <div id='class_selection' class="selectclasses" style="display:none;">
@@ -28,36 +28,36 @@
       <h2>What term do you want to generate a timetable for?</h2>
       <table id='terms'>
         <tr>
-          <td><input type="radio" name="term" value="f1" onclick="checkForElectives()" /></td>
-          <td>Fall - 1st Year</td>
+          <td><input id="termf1" type="radio" name="term" value="f1" onclick="checkForElectives()" /></td>
+          <td><label for="termf1">Fall - 1st Year</label></td>
         </tr>
         <tr>
-          <td><input type="radio" name="term" value="w1" onclick="checkForElectives()" /></td>
-          <td>Winter - 1st Year</td>
+          <td><input id="termw1" type="radio" name="term" value="w1" onclick="checkForElectives()" /></td>
+          <td><label for="termw1">Winter - 1st Year</label></td>
         </tr>
         <tr>
-          <td><input type="radio" name="term" value="f2" onclick="checkForElectives()"/></td>
-          <td>Fall - 2nd Year</td>
+          <td><input id="termf2" type="radio" name="term" value="f2" onclick="checkForElectives()"/></td>
+          <td><label for="termf2">Fall - 2nd Year</label></td>
         </tr>
         <tr>
-          <td><input type="radio" name="term" value="w2" onclick="checkForElectives()" /></td>
-          <td>Winter - 2nd Year</td>
+          <td><input id="termw2" type="radio" name="term" value="w2" onclick="checkForElectives()" /></td>
+          <td><label for="termw2">Winter - 2nd Year</label></td>
         </tr>
         <tr>
-          <td><input type="radio" name="term" value="f3" onclick="checkForElectives()"/></td>
-          <td>Fall - 3rd Year</td>
+          <td><input id="termf3" type="radio" name="term" value="f3" onclick="checkForElectives()"/></td>
+          <td><label for="termf3">Fall - 3rd Year</label></td>
         </tr>
         <tr>
-          <td><input type="radio" name="term" value="w3" onclick="checkForElectives()" /></td>
-          <td>Winter - 3rd Year</td>
+          <td><input id="termw3" type="radio" name="term" value="w3" onclick="checkForElectives()" /></td>
+          <td><label for="termw3">Winter - 3rd Year</label></td>
         </tr>
         <tr>
-          <td><input type="radio" name="term" value="f4" onclick="checkForElectives()"/></td>
-          <td>Fall - 4th Year</td>
+          <td><input id="termf4" type="radio" name="term" value="f4" onclick="checkForElectives()"/></td>
+          <td><label for="termf4">Fall - 4th Year</label></td>
         </tr>
         <tr>
-          <td><input type="radio" name="term" value="w4" onclick="checkForElectives()" /></td>
-          <td>Winter - 4th Year</td>
+          <td><input id="termw4" type="radio" name="term" value="w4" onclick="checkForElectives()" /></td>
+          <td><label for="termw4">Winter - 4th Year</label></td>
         </tr>
       </table>
     </div>
