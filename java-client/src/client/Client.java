@@ -6,6 +6,13 @@ import client.controllers.MainViewController;
 import client.models.Constants;
 import client.views.MainView;
 
+/**
+ * Main Class for Running the Application.
+ * 
+ * Configures frame, and attaches all listeners to the views.
+ * 
+ * @author Andrew O'Hara
+ */
 public class Client {
 	
 	public static void main(String[] args){
@@ -16,7 +23,7 @@ public class Client {
 		JFrame frame = new JFrame(Constants.APP_NAME);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(mainView.getComponent());
-		frame.pack();
+		frame.setSize(350, 400);
 		
 		// setup controllers
 		MainViewController mainViewController = new MainViewController();

@@ -12,6 +12,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+/**
+ * Controller class for making synchronous REST API Requests.
+ * 
+ * Responses are returned as JsonElements.
+ * 
+ * @author Andrew O'Hara
+ */
 public class ApiHandler {
 	
 	private final String ERROR = "error";

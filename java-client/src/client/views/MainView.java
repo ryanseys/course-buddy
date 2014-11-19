@@ -25,18 +25,32 @@ import client.listeners.YesNoListener;
 import client.models.Course;
 import client.models.Program;
 
+/**
+ * Main View for the Application.
+ * 
+ * Holds all of the components for the main views and contains an intermediary
+ * listener for interpreting GUI events and converting them to more concrete
+ * events to the listening controllers.
+ * 
+ * For example, if the user selects a program, then the intermediary listener
+ * will inform the ProgramListener that the program has changed.
+ * 
+ * @author Andrew O'Hara
+ */
 public class MainView implements ViewComponent, ProgramListener, CourseListener, YesNoListener {
 	
 	private final Collection<ProgramListener> programListeners = new LinkedList<>();
 	private final Collection<SubmitListener> submitListeners = new LinkedList<>();
 	private final Collection<CourseListener> courseListeners = new LinkedList<>();
 	
-	private final JPanel panel = new JPanel();
+	private final JPanel panel = new JPanel(), courseInputPanel = new JPanel();
 	private final JComboBox<Program> programSelector = new JComboBox<>();
 	private final YesNoPanel onPatternChooser = new YesNoPanel();
 	private final MultiSelector<Course> coursesSelector = new MultiSelector<>();
+	private final JComboBox<String> termSelector = new JComboBox<>();
 	
 	public MainView(){
+		// Init Components
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		
 		panel.add(new JLabel("Select Your program"));
@@ -49,18 +63,30 @@ public class MainView implements ViewComponent, ProgramListener, CourseListener,
 
 		addSeparator();
 		
-		panel.add(new JLabel("What Courses have you taken?"));
-		panel.add(coursesSelector.getComponent());
+		panel.add(courseInputPanel);
 
 		addSeparator();
 		
 		JButton submitButton = new JButton("Build Timetable");
 		panel.add(submitButton);
 		
+		// Setup Term Selector
+		termSelector.addItem(null);
+		termSelector.addItem("Fall - 1st Year");
+		termSelector.addItem("Winter - 1st Year");
+		termSelector.addItem("Fall - 2nd Year");
+		termSelector.addItem("Winter - 2nd Year");
+		termSelector.addItem("Fall - 3rd Year");
+		termSelector.addItem("Winter - 3rd Year");
+		termSelector.addItem("Fall - 4th Year");
+		termSelector.addItem("Winter - 4th Year");
+		
 		// Add Listeners
 		ComponentListener l = new ComponentListener();
 		programSelector.addItemListener(l);
 		coursesSelector.addListSelectionListener(l);
+		termSelector.addItemListener(l);
+		onPatternChooser.addYesNoListener(this);
 		submitButton.addActionListener(l);
 	}
 	
@@ -118,24 +144,42 @@ public class MainView implements ViewComponent, ProgramListener, CourseListener,
 	@Override
 	public void yesNoSelection(boolean value) {
 		onPatternChooser.setValue(value);
+		
+		// React to Yes/No Value selection, and update GUI with appropriate inputs
+		courseInputPanel.removeAll();
+		if (value){
+			courseInputPanel.add(new JLabel("What term would you like to generate a timetbale for?"));
+			courseInputPanel.add(termSelector);
+		} else {
+			courseInputPanel.add(new JLabel("What Courses have you taken?"));
+			courseInputPanel.add(coursesSelector.getComponent());
+		}
+		panel.validate();
+	}
+	
+	@Override
+	public void selectOnPatternTerm(String term) {
+		termSelector.setSelectedItem(term);
 	}
 	
 	// Nested Listener Class
 	
 	private class ComponentListener implements ItemListener, ActionListener, ListSelectionListener {
-		
-		private Program getProgram(){
-			return (Program) programSelector.getSelectedItem();
-		}
 
 		@Override
 		public void itemStateChanged(ItemEvent arg0) {
-			Program program = getProgram();
+			Program program = (Program) programSelector.getSelectedItem();
+			String term = (String) termSelector.getSelectedItem();
 			if (program != null){
 				for (ProgramListener l : programListeners){
 					l.selectProgram(program);
 				}
 			}
+			if (term != null){
+				for (CourseListener l : courseListeners){
+					l.selectOnPatternTerm(term);
+				}
+			}			
 		}
 
 		@Override

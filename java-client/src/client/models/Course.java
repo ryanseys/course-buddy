@@ -6,6 +6,11 @@ import java.util.List;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+/**
+ * Contains Course Data and serilalization logic.
+ * 
+ * @author Andrew O'Hara
+ */
 public class Course {
 	
 	public final String dept, name;
