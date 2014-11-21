@@ -90,6 +90,13 @@ class database {
         return json_encode($results);
     }
 
+    function executeToSingleResult($sql) {
+        if ($result = $this->conn->query($sql)) {
+            return $result->fetch_object();
+        }
+        return null;
+    }
+
     function getError() {
         return mysqli_error($this->conn);
     }

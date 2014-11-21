@@ -15,6 +15,12 @@ function get_program_by_id($db, $program_id) {
     return $db->executeToArray($sql);
 }
 
+function get_course_by_id($db, $course_id) {
+  $course_id = $db->escape_str($course_id);
+  $sql = "SELECT * FROM courses WHERE id='$course_id';";
+  return $db->executeToSingleResult($sql);
+}
+
 function get_program_courses_for_term($db, $program, $term, $year) {
     $program = $db->escape_str($program);
     $term = $db->escape_str($term);
@@ -32,17 +38,54 @@ function get_program_courses_for_term($db, $program, $term, $year) {
     return $db->executeToArray($sql);
 }
 
-function get_offerings_of_courses($db, $courses) {
-  $sql_course_list = implode(", ", array_map("intval", $courses));
+function get_offerings_of_courses($db, $term, $courses) {
+  $term = $db->escape_str($term);
+  $sql_course_list = gen_sql_list($courses);
 
   $sql = ("
     SELECT o.id, c.id AS course, type, seq, term, time_start, time_end, capacity, days, dept, code, name
     FROM offerings o
     INNER JOIN courses c
     ON c.id=o.course
-    WHERE o.course IN ($sql_course_list);
+    WHERE o.course IN ($sql_course_list) AND term='$term';
   ");
   return $db->executeToArray($sql);
+}
+
+function get_remaining_core_courses_for_offpattern($db, $program, $next_term, $taken_courses) {
+  $program = $db->escape_str($program);
+  $term = $db->escape_str($next_term);
+  $sql_course_list = gen_sql_list($taken_courses);
+  return $db->executeToArray("
+    SELECT course
+    FROM program_reqs
+    WHERE program='$program' AND term='$term' AND course NOT IN ($sql_course_list);
+  ");
+}
+
+function has_completed_course_in_elective_group($db, $elective_group, $taken_courses) {
+  $elective_group = $db->escape_str($elective_group);
+  $sql_course_list = gen_sql_list($taken_courses);
+  return $db->executeToSingleResult("
+    SELECT course FROM elective_group_courses
+    WHERE elective_group='$elective_group'
+    AND course IN ($sql_course_list)
+    LIMIT 1;
+  ");
+}
+
+function get_elective_options_for_group($db, $elective_group, $taken_courses) {
+  $elective_group = $db->escape_str($elective_group);
+  $sql_course_list = gen_sql_list($taken_courses);
+  return $db->executeToArray("
+    SELECT course FROM elective_group_courses
+    WHERE elective_group='$elective_group'
+    AND course NOT IN ($sql_course_list);
+  ");
+}
+
+function gen_sql_list($array) {
+  return implode(", ", array_map("intval", $array));
 }
 
 ?>
