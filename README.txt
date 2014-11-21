@@ -46,7 +46,11 @@ Andrew O'Hara
 
 Caleb Simpson
 
-<TODO>
+- Developed Off-pattern flow (class selection, searching prereq tree for next courses, asking which courses to take)
+- Developed timetable generation to support electives, full class detection, and term detection
+- Developed mutex lock to avoid concurrency issues during enrollement.
+- Developed most of the install page/script
+- Developed portions of the front-end views
 
 +--------------------------------------------------------------------------+
 | 5. Provide a brief description of your folders/files. If your project    |
