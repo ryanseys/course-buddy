@@ -84,6 +84,16 @@ function get_elective_options_for_group($db, $elective_group, $taken_courses) {
   ");
 }
 
+function course_has_offerings_for_term($db, $term, $course) {
+  $course = $db->escape_str($course);
+  $term = $db->escape_str($term);
+  return $db->executeToSingleResult("
+    SELECT id FROM offerings
+    WHERE course='$course' AND term='$term' AND capacity > 0
+    LIMIT 1;
+  ") != null;
+}
+
 function gen_sql_list($array) {
   return implode(", ", array_map("intval", $array));
 }
