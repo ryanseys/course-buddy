@@ -104,8 +104,8 @@ function getTimetable() {
   timetable.innerHTML = '<br><b>Generating timetables...</b><br>';
   var program = getSelectedProgram();
   var pattern = document.querySelector('input[name="pattern"]:checked');
-  var term = document.querySelector(pattern === 'on' ? 'input[name="term"]:checked' : 'input[name="offpattern_term"]:checked');
-  var courses = document.querySelectorAll(pattern === 'on' ? 'input[name="course"]:checked' : 'input[name="offpatternCoreCourse"]:checked') || [];
+  var term = document.querySelector(pattern.value === 'on' ? 'input[name="term"]:checked' : 'input[name="offpattern_term"]:checked');
+  var courses = document.querySelectorAll(pattern.value === 'on' ? 'input[name="course"]:checked' : 'input[name="offpatternCoreCourse"]:checked') || [];
   var courseids = [];
   for (var i = 0; i < courses.length; i++) {
     var el = courses[i];
