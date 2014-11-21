@@ -11,6 +11,7 @@ $program_id = get_arg("program");
 $group_names = get_arg("groups");
 $group_name = get_arg("group");
 $display_all = get_arg("all");
+$term = ucfirst(get_arg("term"));
 
 if ($program_id){
     if ($display_all == "true") {
@@ -23,7 +24,7 @@ if ($program_id){
 } else if ($group_names){
     $results = array();
     foreach(json_decode($group_names) as $group_name){
-        array_push($results, ['req_group' => $group_name, 'electives' => get_electives($db, $group_name)]);
+        array_push($results, ['req_group' => $group_name, 'electives' => get_electives($db, $term, $group_name)]);
     }
     echo json_encode($results);
 } else {
@@ -38,14 +39,16 @@ function get_elective_groups($db, $program_id){
     return $res;
 }
 
-function get_electives($db, $group_name){
+function get_electives($db, $term, $group_name){
     $group_name = $db->escape_str($group_name);
     $res = $db->executeToArray(
-        "SELECT c.id, c.dept, c.code, c.name
+        "SELECT DISTINCT(c.id), c.dept, c.code, c.name
         FROM elective_group_courses g
         INNER JOIN courses c
         ON g.course=c.id
-        WHERE g.elective_group=\"$group_name\";"
+        INNER JOIN offerings o
+        ON o.course=c.id
+        WHERE g.elective_group=\"$group_name\" AND o.term='$term';"
     );
     return $res;
 }

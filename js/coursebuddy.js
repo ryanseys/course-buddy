@@ -33,14 +33,15 @@ function getPrograms(callback) {
   }, callback);
 }
 
-function getElectives(group_names, callback) {
+function getElectives(group_names, term, callback) {
   request({
     method: 'get',
     url: 'electives.php',
     json: true,
     urlencode: true,
     data: {
-      groups: JSON.stringify(group_names)
+      groups: JSON.stringify(group_names),
+      term: term
     }
   }, callback);
 }
@@ -362,16 +363,13 @@ function putElectiveHtml() {
   // Get names of current elective group
   var current_groups = [];
 
-  var SelectedTerm = getSelectedTerm();
-  if (SelectedTerm === null) {
-    return;
-  }
+  if (getSelectedTerm() === null) { return; }
 
   // Get the names of the elective groups for this program for this term
   getElectiveGroupNames(getSelectedProgram(), function(group_names) {
 
     // Using group names for this term, get the lists of possible electives for each group
-    getElectives(group_names, function(elective_groups) {
+    getElectives(group_names, getSelectedTerm()["term"], function(elective_groups) {
       generateElectiveHtmlForGroups(elective_groups, true);
       getTimetable();
     });
