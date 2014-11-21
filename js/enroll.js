@@ -2,6 +2,8 @@ var form_enroll = document.getElementById("form_enroll");
 var results_div = document.getElementById("results");
 
 function enroll(){
+  clear_confirmation();
+
   // Get offerings ids of core courses from selected timetable
   var offering_ids = form_enroll.enroll_in.value;
   if (offering_ids){
@@ -24,4 +26,8 @@ function enroll(){
       results_div.innerHTML += '<li>' + (result.success ? 'Enrolled': 'Not Enrolled') + ': ' + result.dept + ' ' + result.code + ': ' + result.name + ' ' + result.seq + '</li>';
     }
   });
+}
+
+function clear_confirmation(){
+  results_div.innerHTML = "";
 }

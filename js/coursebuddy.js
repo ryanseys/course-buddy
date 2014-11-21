@@ -14,6 +14,7 @@ var tt;
 var electivesToSelect = [];
 
 function checkForElectives() {
+  clear_confirmation();
   putElectiveHtml();
   elective_selection.style.display = '';
 }
@@ -90,6 +91,7 @@ function getAllElectives(program_id, callback) {
 }
 
 function setOnPattern() {
+  clear_confirmation();
   timetable.innerHTML = '';
   class_selection.style.display = 'none';
   elective_selection.style.display = 'none';
@@ -102,6 +104,7 @@ function setOnPattern() {
 }
 
 function getTimetable() {
+  clear_confirmation();
   timetable.innerHTML = '<br><b>Generating timetables...</b><br>';
   var program = getSelectedProgram();
   var pattern = document.querySelector('input[name="pattern"]:checked');
@@ -199,6 +202,7 @@ function setOffPattern() {
     }
   }
 
+  clear_confirmation();
   timetable.innerHTML = '';
   elective_selection.style.display = 'none';
   timetable_selection.style.display = 'none';
@@ -217,6 +221,7 @@ function setOffPattern() {
 
 // Sends the selected completed classes, and asks the server to provide the next 5 classes to take.
 function getNextClasses() {
+  clear_confirmation();
   selected_classes = [];
   selected_class_inputs = document.querySelectorAll("input[name='course']:checked");
   for (i = 0; i < selected_class_inputs.length; i++) {
@@ -228,7 +233,7 @@ function getNextClasses() {
     method: 'post',
     urlencode: true,
     json: true,
-    data: { 
+    data: {
       courses: selected_classes,
       term: document.querySelector("input[name='offpattern_term']:checked").value,
       program: getSelectedProgram()
@@ -391,7 +396,7 @@ function generateElectiveHtmlForGroups(elective_groups, includeAutoGenerate) {
 
     electives_html += '<h3>' + elective_group.req_group + '</h3>';
     electives_html += '<select class="electiveselect"';
-    if (includeAutoGenerate) 
+    if (includeAutoGenerate)
       electives_html += ' onchange="getTimetable()"';
     electives_html += '><option value="">No elective</option>';
 
