@@ -24,15 +24,15 @@
       <input id="termf" type="radio" name="offpattern_term" value="F" checked /><label for="termf">Fall Term</label>
       <input id="termw" type="radio" name="offpattern_term" value="W" /><label for="termw">Winter Term</label>
       <h2>Which core courses have you taken?</h2>
-      <ul id='progCoreCourses'></ul>
+      <div id='progCoreCourses'></div>
       <h2>Which elective courses have you taken?</h2>
       <ul id='progElectiveCourses'></ul>
       <button onclick="getNextClasses()">Submit</button>
     </div>
 
     <div id='offpattern_class_selection' style='display:none;'>
-      <h2>Which core courses would you like to take?</h2>
-      <ul id='offpatternCoreCourseOptions'></ul>
+      <h2 class="corecourses">Which core courses would you like to take?</h2>
+      <div id='offpatternCoreCourseOptions'></div>
     </div>
 
     <div id='term_selection' class="selectterm" style="display:none;">
@@ -86,7 +86,7 @@
         <h2>Select your preferred timetable below</h2>
         <div id="timetable"></div>
       </div>
-      <button id="enroll_button" type="button" class="submitbtn" onclick="enroll()" style="display: none;">Enroll in these Courses</button>
+      <button id="enroll_button" type="button" class="submitbtn" onclick="enroll()" style="display: none;">Enroll in the selected timetable</button>
     </form>
 
     <ul>

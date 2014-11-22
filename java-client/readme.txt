@@ -21,4 +21,4 @@ Instructions to Run
 Notes
 #####
 
-- This was built and run with Eclipse IDE.  Reccomend that you do so, too
+- This was built and run with Eclipse IDE.  Recommend that you do so, too.
