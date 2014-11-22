@@ -16,20 +16,36 @@ var electivesToSelect = [];
 var allTimetables = null;
 var currentTimetable = null;
 
+/**
+ * Hide an element
+ * @param  {object} el Element to hide.
+ */
 function hide(el) {
   el.style.display = 'none';
 }
 
+/**
+ * Show an element
+ * @param  {object} el    Element to show
+ * @param  {string} style style used to show (optional)
+ */
 function show(el, style) {
   el.style.display = style || '';
 }
 
+/**
+ * Check for electives, showing them if available.
+ */
 function checkForElectives() {
   clear_confirmation();
   putElectiveHtml();
   show(elective_selection);
 }
 
+/**
+ * Get the list of programs available from the server.
+ * @param  {Function} callback The callback function.
+ */
 function getPrograms(callback) {
   request({
     method: 'get',
@@ -38,6 +54,13 @@ function getPrograms(callback) {
   }, callback);
 }
 
+/**
+ * Get the list of electives from the
+ * @param  {[type]}   group_names [description]
+ * @param  {[type]}   term        [description]
+ * @param  {Function} callback    [description]
+ * @return {[type]}               [description]
+ */
 function getElectives(group_names, term, callback) {
   request({
     method: 'get',
@@ -51,10 +74,18 @@ function getElectives(group_names, term, callback) {
   }, callback);
 }
 
+/**
+ * Get the selected program value.
+ * @return {string} The selected program.
+ */
 function getSelectedProgram() {
   return setupselect.options[setupselect.selectedIndex].value;
 }
 
+/**
+ * Get the selected term
+ * @return {string} The selected term or null if no term is selected.
+ */
 function getSelectedTerm() {
   var term = document.querySelector('input[name="term"]:checked');
   if (term && term.value) {
@@ -68,6 +99,11 @@ function getSelectedTerm() {
   return null;
 }
 
+/**
+ * Get the list of courses from the server given a particular program id.
+ * @param  {number}   program_id The program id to search for courses.
+ * @param  {Function} callback   The callback function.
+ */
 function getCourses(program_id, callback) {
   var data = {
     program: program_id
@@ -82,6 +118,11 @@ function getCourses(program_id, callback) {
   }, callback);
 }
 
+/**
+ * Get all the electives from the server for a particular program.
+ * @param  {number}   program_id The program id
+ * @param  {Function} callback   The callback function
+ */
 function getAllElectives(program_id, callback) {
   request({
     method: 'get',
@@ -94,6 +135,9 @@ function getAllElectives(program_id, callback) {
   }, callback);
 }
 
+/**
+ * Set the on-pattern UI when the user selects that option.
+ */
 function setOnPattern() {
   clear_confirmation();
   timetable.innerHTML = '';
@@ -106,6 +150,10 @@ function setOnPattern() {
   hide(offpattern_class_selection);
 }
 
+/**
+ * Generate the timetables from all the settings that are in the UI.
+ * Then update the UI to display the timetables that were found.
+ */
 function getTimetable() {
   clear_confirmation();
   timetable.innerHTML = '<br><b>Generating timetables...</b><br>';
@@ -640,6 +688,10 @@ function generateCalendar() {
     increaseTimeByHalfHour();
   }
 
+  /**
+   * Increase time string by a half hour.
+   * Used for generating the times on the calendar times column.
+   */
   function increaseTimeByHalfHour() {
     var t = time.split(':');
     var hour = parseInt(t[0]);
@@ -711,12 +763,20 @@ function renderCalendar(tt) {
   }
 }
 
+/**
+ * Show the next timetable in the calendar view
+ * from the list of all timetables.
+ */
 function nextTimetable() {
   currentTimetable = (currentTimetable + 1) % allTimetables.length;
   renderCalendar(allTimetables[currentTimetable]);
   timetable.innerHTML = 'Showing timetable ' + (currentTimetable + 1) + ' of ' + allTimetables.length + ' found.';
 }
 
+/**
+ * Show the previous timetable in the calendar view
+ * from the list of all timetables.
+ */
 function prevTimetable() {
   currentTimetable -= 1;
   if(currentTimetable < 0) {
@@ -726,7 +786,9 @@ function prevTimetable() {
   timetable.innerHTML = 'Showing timetable ' + (currentTimetable + 1) + ' of ' + allTimetables.length + ' found.';
 }
 
-// When you load the page, immediately load the programs available.
+/**
+ * When you load the page, immediately load the programs available.
+ */
 getPrograms(function(programs) {
   for (var i = 0; i < programs.length; i++) {
     var el = document.createElement('option');
