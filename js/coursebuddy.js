@@ -9,7 +9,6 @@ var timetable = document.getElementById('timetable');
 var enroll_button = document.getElementById("enroll_button");
 var electives_div = document.getElementById("electives");
 var electives_form = document.getElementById("form_electives");
-var tt;
 
 var electivesToSelect = [];
 
@@ -169,7 +168,7 @@ function getTimetable() {
   }, function(resp) {
     var tts = generateAll(resp);
 
-    timetable.innerHTML = (tts.length === 0 ? '<br><b>There were no timetables found.</b><br>' : '');
+    timetable.innerHTML = (tts.length === 0 ? '<br><b>Sorry, there were no timetables found. Every possibility resulted in conflicts.</b><br>' : '');
 
     for (var i = 0; i < tts.length; i++) {
       timetable.innerHTML += getTimetableHTML(tts[i]);
@@ -187,19 +186,28 @@ function setOffPattern() {
   function genCourseSelectionList(courses, container) {
     var course;
     container.innerHTML = '';
+    var table_el = document.createElement('table');
+    var table_body = document.createElement('tbody');
+    table_el.className = 'coursetable';
     for (var i = 0; i < courses.length; i++) {
       course = courses[i];
-      var li = document.createElement('li');
+      var tr = document.createElement('tr');
       var li_input = document.createElement('input');
       var label = document.createElement('label');
       li_input.value = course.id;
       li_input.type = 'checkbox';
       li_input.name = 'course';
-      label.appendChild(li_input);
-      label.innerHTML += ' ' + course.dept + ' ' + course.code + ' - ' + course.name;
-      li.appendChild(label);
-      container.appendChild(li);
+      var td1 = document.createElement('td');
+      var td2 = document.createElement('td');
+      td1.appendChild(li_input);
+      td2.innerHTML = ' ' + course.dept + ' ' + course.code + ' - ' + course.name;
+      label.appendChild(td1);
+      label.appendChild(td2);
+      tr.appendChild(label);
+      table_body.appendChild(tr);
     }
+    table_el.appendChild(table_body);
+    container.appendChild(table_el);
   }
 
   clear_confirmation();
@@ -219,7 +227,7 @@ function setOffPattern() {
   class_selection.style.display = '';
 }
 
-// Sends the selected completed classes, and asks the server to provide the next 5 classes to take.
+// Sends the selected completed classes, and asks the server to provide the next classes to take.
 function getNextClasses() {
   clear_confirmation();
   selected_classes = [];
@@ -240,12 +248,16 @@ function getNextClasses() {
     }
   }, function(result) {
     core_courses = result.next_courses.core
-    ul = document.getElementById("offpatternCoreCourseOptions");
-    ul.innerHTML = "";
+    offpattern_el = document.getElementById("offpatternCoreCourseOptions");
+    var table_html = "<table class='coursetable'>";
+
     for (i = 0; i < core_courses.length; i++) {
-      label = core_courses[i].dept + " " + core_courses[i].code + " " + core_courses[i].name;
-      ul.innerHTML += "<li><label><input type='checkbox' name='offpatternCoreCourse' value='"+core_courses[i].id+"'/>" + label + "</label></li>";
+      var label_html = core_courses[i].dept + " " + core_courses[i].code + " " + core_courses[i].name;
+      table_html += "<tr><td><input type='checkbox' name='offpatternCoreCourse' value='" + core_courses[i].id + "'/></td><td>" + label_html + "</td></tr>";
     }
+
+    table_html += '</table>';
+    offpattern_el.innerHTML = table_html;
 
     generateElectiveHtmlForGroups(result.next_courses.electives, false);
 
@@ -309,6 +321,24 @@ function doesNotConflict(course, otherCourses) {
     for (var j = 0; j < courseDays.length; j++) {
       if (otherDays.indexOf(courseDays[j]) !== -1) {
         sameDay = true;
+      }
+    }
+
+    // check if id's match to compare sections
+    if(course.course === otherCourse.course) {
+      var cSeq = course.seq.charAt(0);
+      var otherSeq = otherCourse.seq.charAt(0);
+      if(cSeq === otherSeq) {
+        // do nothing, they match!
+      } else if((course.type === 'PAS' && cSeq === 'P') || (otherCourse.type === 'PAS' && otherSeq === 'P')) {
+        // do nothing, PAS with P are good for any lecture section
+      } else if((course.type === 'LAB' && cSeq === 'L') || (otherCourse.type === 'LAB' && otherSeq === 'L')) {
+        // do nothing, LAB with L are good for any lecture section
+      } else if((course.type === 'TUT' && cSeq === 'T') || (otherCourse.type === 'TUT' && otherSeq === 'T')) {
+        // do nothing, TUT with T are good for any lecture section
+      } else if(cSeq !== otherSeq) {
+        console.log('conflict found with sections ', course, otherCourse);
+        return false; // the course must have the same section
       }
     }
 
@@ -489,6 +519,7 @@ function increaseIndexes(indexes) {
 
 function generateAll(offerings) {
   var timetables = [];
+  var timetableStrings = {};
   var aTimetable = [];
   var indexes = [];
   var classes = getClasses(offerings);
@@ -503,7 +534,16 @@ function generateAll(offerings) {
     var tt = generateTimetable(classes, indexes);
 
     if (isConflictFree(tt)) {
-      timetables.push(tt);
+      // cut out duplicates
+      var ttString = JSON.stringify(tt);
+      if(!timetableStrings[ttString]) {
+        timetableStrings[ttString] = true;
+        // add timetable to found timetables
+        timetables.push(tt);
+      } else {
+        // a duplicate was found... do not add again.
+        console.log('DUPE');
+      }
     }
   }
 
