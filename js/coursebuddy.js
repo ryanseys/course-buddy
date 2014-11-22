@@ -337,7 +337,6 @@ function doesNotConflict(course, otherCourses) {
       } else if((course.type === 'TUT' && cSeq === 'T') || (otherCourse.type === 'TUT' && otherSeq === 'T')) {
         // do nothing, TUT with T are good for any lecture section
       } else if(cSeq !== otherSeq) {
-        console.log('conflict found with sections ', course, otherCourse);
         return false; // the course must have the same section
       }
     }
@@ -348,25 +347,21 @@ function doesNotConflict(course, otherCourses) {
 
     // course starts before other course finishes
     if (timeStart >= otherTimeStart && timeStart <= otherTimeEnd) {
-      // console.log('Conflict found: ', course, otherCourse);
       return false;
     }
 
     // course ends after other course starts
     if (timeEnd <= otherTimeEnd && timeEnd >= otherTimeStart) {
-      // console.log('Conflict found: ', course, otherCourse);
       return false;
     }
 
     // course surrounds other course
     if (timeStart <= otherTimeStart && timeEnd >= otherTimeEnd) {
-      // console.log('Conflict found: ', course, otherCourse);
       return false;
     }
 
     // other course surrounds course
     if (otherTimeStart <= timeStart && otherTimeEnd >= timeEnd) {
-      // console.log('Conflict found: ', course, otherCourse);
       return false;
     }
   }
@@ -540,9 +535,6 @@ function generateAll(offerings) {
         timetableStrings[ttString] = true;
         // add timetable to found timetables
         timetables.push(tt);
-      } else {
-        // a duplicate was found... do not add again.
-        console.log('DUPE');
       }
     }
   }

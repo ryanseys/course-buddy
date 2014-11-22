@@ -30,7 +30,6 @@ function request(options, callback) {
   var url = method === 'get' ? options.url + '?' + qs : options.url;
   var j = !!options.json;
 
-  console.log('AJAX requesting:', method, url);
   req.open(method, url, true);
   if (options.urlencode)
     req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
