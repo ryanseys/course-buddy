@@ -37,16 +37,15 @@ Ryan Seys:
 - Developed part of the database queries for use in the API.
 - Developed timetable calendar UI generation
 
-Andrew O'Hara
+Andrew O'Hara:
+- Developed Database Schema and manual SQL generation
+- Developed parser to automate course and offering SQL generation
+- Developed Java View 1
+- Developed elective selection and enrolment HTML front-end
+- Developed enrolment back-end
+- Developed much of backend REST API
 
-- Developed Database Schema
-- Developed Ruby parser to generate course and CSE SQL
-- Developed Java View
-- Manual SQL creation
-- Developed elective selection frontend and course enrollment functionality
-
-Caleb Simpson
-
+Caleb Simpson:
 - Developed Off-pattern flow (class selection, searching prereq tree for next
   courses, asking which courses to take)
 - Developed timetable generation to support electives, full class detection, and
@@ -94,8 +93,28 @@ unique scope and nature of the application, many of the sql queries were hand-
 written and thus, to support more Engineering programs, these queries will need
 to also be hand-written or somehow automated to insert into the database.
 
-<TODO add instructions on what files to edit and how to install and backup plan
-in case the install.php doesn't work i.e. manually insert the sql file into a db>
+The biggest database issue is a shortcut related to the program
+requirements SQL.  There are several courses which only require the student to be
+in the faculty of engineering, or are require the student to be in one of several
+engineering programs.  The SQL currently omits this information, and will only
+allow Software Engineering students to take these courses.  The course_program_reqs
+table will need to be updated to allow for faculty requirements, and allow for
+multiple valid programs to be elegible for a course.
+
+The rest of the database is far more extendable.  There is a programs table, which
+currently only holds one program.  More programs can be added to this table, and
+then, then program's required core courses can be added to the course_program_reqs
+table  Any required elective groups (e.g. CSE, SE Note A) can be added to the
+program with the program_elective_groups table, and if necessary, additional
+elective groups can be created by adding courses to the elective_group_courses
+table.
+
+Course Buddy currently installs the database by running the generated install.sql
+file.  This file is generated ahead of time, and the contirbuting files and
+generator will not be included in the submitted version of this assignment.  In
+order to modify the database, open a mysql shell session using root credentials.
+Then use the database that is referenced in config.php.  From there, you can run
+new SQL files using the source <path> command.
 
 Our database tables are as follows:
 
