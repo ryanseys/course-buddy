@@ -33,21 +33,23 @@ Mr. Abaza
 Ryan Seys:
 - Developed the database class and generic methods for querying.
 - Developed timetable generation algorithm written in JavaScript.
-- Developed much of the front-end application.
+- Developed much of the front-end application for on-pattern flow.
 - Developed part of the database queries for use in the API.
+- Developed timetable calendar UI generation
 
-Andrew O'Hara
+Andrew O'Hara:
+- Developed Database Schema and manual SQL generation
+- Developed parser to automate course and offering SQL generation
+- Developed Java View 1
+- Developed elective selection and enrolment HTML front-end
+- Developed enrolment back-end
+- Developed much of backend REST API
 
-- Developed Database Schema
-- Developed Ruby parser to generate course and CSE SQL
-- Developed Java View
-- Manual SQL creation
-- Developed elective selection frontend and course enrollment functionality
-
-Caleb Simpson
-
-- Developed Off-pattern flow (class selection, searching prereq tree for next courses, asking which courses to take)
-- Developed timetable generation to support electives, full class detection, and term detection
+Caleb Simpson:
+- Developed Off-pattern flow (class selection, searching prereq tree for next
+  courses, asking which courses to take)
+- Developed timetable generation to support electives, full class detection, and
+  term detection
 - Developed mutex lock to avoid concurrency issues during enrollement.
 - Developed most of the install page/script
 - Developed portions of the front-end views
@@ -90,6 +92,29 @@ take place on install to insert all the data into the database. Due to the
 unique scope and nature of the application, many of the sql queries were hand-
 written and thus, to support more Engineering programs, these queries will need
 to also be hand-written or somehow automated to insert into the database.
+
+The biggest database issue is a shortcut related to the program
+requirements SQL.  There are several courses which only require the student to be
+in the faculty of engineering, or are require the student to be in one of several
+engineering programs.  The SQL currently omits this information, and will only
+allow Software Engineering students to take these courses.  The course_program_reqs
+table will need to be updated to allow for faculty requirements, and allow for
+multiple valid programs to be elegible for a course.
+
+The rest of the database is far more extendable.  There is a programs table, which
+currently only holds one program.  More programs can be added to this table, and
+then, then program's required core courses can be added to the course_program_reqs
+table  Any required elective groups (e.g. CSE, SE Note A) can be added to the
+program with the program_elective_groups table, and if necessary, additional
+elective groups can be created by adding courses to the elective_group_courses
+table.
+
+Course Buddy currently installs the database by running the generated install.sql
+file.  This file is generated ahead of time, and the contirbuting files and
+generator will not be included in the submitted version of this assignment.  In
+order to modify the database, open a mysql shell session using root credentials.
+Then use the database that is referenced in config.php.  From there, you can run
+new SQL files using the source <path> command.
 
 Our database tables are as follows:
 
@@ -200,7 +225,58 @@ this table.
 | to suggest to the student?                                                   |
 +------------------------------------------------------------------------------+
 
-<TODO>
+To generate a conflict-free timetable, we ask the user to either specify a
+particular year and term (e.g. 1st year, fall term) (on-pattern) which we use to
+query the database to figure out which classes for their program fall into that
+option, or we ask them to provide a list of classes and electives that they have
+previously taken (off-pattern) and we calculate what courses they can take given
+that list.
+
+Once we have a list of courses that they want to take, we query the database for
+all of the course offerings with a capacity > 0 and send this to the front-end
+client. The front end client receieves a large list of offerings and does the
+following:
+
+Step 1. Go through every offering and place it inside of a "bucket" with all of
+the other offerings that are of the same course and type. That is, all SYSC 3200
+LEC offerings will end up in the same bucket. In this case, picking one offering
+from every offering "bucket" will be a set of offerings that make up a single
+timetable. Note: We assume here that we need one of every type of offering i.e.
+if a course has a LAB section, that LAB offering is mandatory.
+
+Step 2. Create a list of indexes that will represent the current index of
+offerings in each offering bucket (from above) that we are going to consider for
+a timetable. An example list of indexes is something like this:
+
+[ // all indexes
+  [ // every inner array represents an offering type e.g. SYSC 3200 LEC
+    0, // start at the first offering in this offering bucket
+    2 // there are a maximum of this many items in the offering bucket
+  ],
+  [ // another offering type here e.g. SYSC 3200 LAB
+    0,
+    3
+  ]
+]
+
+Step 3. Generate all timetables by iterating through the indexes list, getting
+the index for each offering and using it to pick an offering from the offering
+bucket list. In between each iteration, increase the indexes array. This
+involves increasing the left most index array before it reaches its max, then
+increasing the one to its right, repeating until every index has been maxed out
+and at this point you have tried every combination of offering.
+A "timetable" is just a list of offerings, one from each offering bucket.
+
+Step 4. Iterate through every timetable and pick out the ones that are conflict-
+free. We do this by iterating through the offerings and testing them against
+each other, ensuring their times don't overlap and their sequence numbers are
+either generic e.g. LAB with sequence "L" or PAS with sequence "P". The
+timetables that pass this test are conflict-free timetables and are added to a
+list of found timetables.
+
+Step 5. Render the list of found timetables (or just the first one), unless the
+list is empty and then make a suggestion to the user to select less courses in
+hopes that this will reduce the conflicts to zero.
 
 +------------------------------------------------------------------------------+
 | 9. In your solution, which entity identifies the courses that can be taken   |
@@ -216,8 +292,8 @@ Determining the conflict-free timetable is done by querying the server for a
 set of offerings for a particular set of courses set by the student in the
 client. The server returns the raw set of all course offerings and then the
 client does the work of generating all the conflict-free timetables. The results
-of this work is displayed to the user in a list, where they can select which set
-of course offerings they would like to enroll in.
+of this work is displayed to the user in a calendar view, where they can select
+which calendar suits their needs the best.
 
 The reason for doing the time-table generation on the front end is to free up
 the server from doing any long running time-table generation algorithm. This

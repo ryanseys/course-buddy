@@ -5,12 +5,15 @@ function enroll(){
   clear_confirmation();
 
   // Get offerings ids of core courses from selected timetable
-  var offering_ids = form_enroll.enroll_in.value;
-  if (offering_ids){
-    offering_ids = JSON.parse(offering_ids);
-  } else {
-    alert("You have not selected a timetable");
+  var offering_ids = [];
+
+  if(!allTimetables || allTimetables.length === 0 || currentTimetable === null) {
+    alert('Cannot enroll in this timetable because it does not exist');
     return false;
+  }
+  var tt = allTimetables[currentTimetable];
+  for (var i in tt) {
+    offering_ids.push(tt[i].id);
   }
 
   // Request Enrolment

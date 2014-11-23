@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html charset="UTF-8">
   <head>
     <title>Course Buddy - Carleton U Course Scheduling Tool</title>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
     <link rel="stylesheet" type="text/css" href="css/style.css">
   </head>
   <body>
@@ -23,11 +25,12 @@
       <h2>Which term do you want to generate a timetable for?</h2>
       <input id="termf" type="radio" name="offpattern_term" value="F" checked /><label for="termf">Fall Term</label>
       <input id="termw" type="radio" name="offpattern_term" value="W" /><label for="termw">Winter Term</label>
+
+      <!-- off pattern -->
       <h2>Which core courses have you taken?</h2>
       <div id='progCoreCourses'></div>
       <h2>Which elective courses have you taken?</h2>
       <ul id='progElectiveCourses'></ul>
-      <button onclick="getNextClasses()">Submit</button>
     </div>
 
     <div id='offpattern_class_selection' style='display:none;'>
@@ -79,20 +82,24 @@
       </form>
     </div>
 
-    <button id="offpattern_generate" onclick="getTimetable()" style='display:none'>Generate Timetables</button>
-
     <form id="form_enroll">
       <div id="timetable_selection" style="display:none">
         <h2>Select your preferred timetable below</h2>
         <div id="timetable"></div>
+        <div style='float:right;'>
+          <button type="button" onclick='prevTimetable()'>Previous timetable</button>
+          <button type="button" onclick='nextTimetable()'>Next timetable</button>
+          <button id="enroll_button" type="button" class="submitbtn" onclick="enroll()" style="display: none;">Enroll in this timetable</button>
+        </div>
+        <table id='calendar' class="timetabletable"></table>
       </div>
-      <button id="enroll_button" type="button" class="submitbtn" onclick="enroll()" style="display: none;">Enroll in the selected timetable</button>
     </form>
 
     <ul>
       <div id="results"></div>
     </ul>
     <footer class="footer">Developed by Ryan Seys, Andrew O'Hara and Caleb Simpson</footer>
+
     <script type="text/javascript" src="js/xhr_helper.js"></script>
     <script type="text/javascript" src="js/coursebuddy.js"></script>
     <script type="text/javascript" src="js/enroll.js"></script>
