@@ -94,6 +94,9 @@ unique scope and nature of the application, many of the sql queries were hand-
 written and thus, to support more Engineering programs, these queries will need
 to also be hand-written or somehow automated to insert into the database.
 
+<TODO add instructions on what files to edit and how to install and backup plan
+in case the install.php doesn't work i.e. manually insert the sql file into a db>
+
 Our database tables are as follows:
 
 -- A generic course that is offered at Carleton.
