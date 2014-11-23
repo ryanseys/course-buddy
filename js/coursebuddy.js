@@ -334,9 +334,11 @@ function getNextClasses() {
     var table_html = "<table class='coursetable'>";
 
     for (i = 0; i < core_courses.length; i++) {
-      var label_html = core_courses[i].dept + ' ' + core_courses[i].code + ' ' + core_courses[i].name;
-      table_html += "<tr><td><input type='checkbox' name='offpatternCoreCourse' onchange='getTimetable()' value='" +
-          core_courses[i].id + "'/></td><td>" + label_html + "</td></tr>";
+      var course = core_courses[i];
+      var label_html = course.dept + ' ' + course.code + ' ' + course.name;
+      table_html += "<tr>";
+      table_html += "<td><input type='checkbox' id='" + course.id + "' name='offpatternCoreCourse' onchange='getTimetable()' value='" + course.id + "'/></td>";
+      table_html += "<td><label for='" + course.id + "'>" + label_html + "</label></td></tr>";
     }
 
     table_html += '</table>';
