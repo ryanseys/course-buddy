@@ -85,6 +85,36 @@ available in the /css folder.
 | in the code.                                                                |
 +-----------------------------------------------------------------------------+
 
+Quick-start how-to install:
+---------------------------
+
+1. Update the config.php file with your database credentials and port number.
+The database will be created in the install script.
+
+2. Start your XAMPP server, aiming the "htdocs" folder at this project's root
+folder. This is the folder that contains install.html and index.html
+
+3. Point your web browser at http://localhost/install.html
+
+4. Click the "Install" button. When the page refreshes, course buddy should be
+good to use. If the program's list does not populate with "Software Engineering"
+you may need to wait a bit longer or possibly there's issue with your config.php
+
+If the page did not refresh properly, just aim your browser at http://localhost
+
+Alternative manual approach without using install.html:
+
+1. Create an empty database using your MySQL tool of choice.
+2. Insert the install.sql into this database using your MySQL tool of choice.
+3. Update the config.php file with your database credentials and port number.
+4. Start your XAMPP server, aiming the "htdocs" folder at this project's root
+folder. This is the folder that contains index.html
+5. Point your web browser at http://localhost
+
++--------------------------------------------------------------------+
+| Extended version explaining the intricacies of our data / database |
++--------------------------------------------------------------------+
+
 No changes to the program (PHP / JS) should be required to support all
 the programs of the Faculty of Engineering. The only thing that will need to
 change is the data that the program has access to, that is, the sql queries that
@@ -101,16 +131,16 @@ allow Software Engineering students to take these courses.  The course_program_r
 table will need to be updated to allow for faculty requirements, and allow for
 multiple valid programs to be elegible for a course.
 
-The rest of the database is far more extendable.  There is a programs table, which
-currently only holds one program.  More programs can be added to this table, and
+The rest of the database is far more extensible. There is a programs table, which
+currently only holds one program. More programs can be added to this table, and
 then, then program's required core courses can be added to the course_program_reqs
-table  Any required elective groups (e.g. CSE, SE Note A) can be added to the
+table.  Any required elective groups (e.g. CSE, SE Note A) can be added to the
 program with the program_elective_groups table, and if necessary, additional
 elective groups can be created by adding courses to the elective_group_courses
 table.
 
 Course Buddy currently installs the database by running the generated install.sql
-file.  This file is generated ahead of time, and the contirbuting files and
+file.  This file is generated ahead of time, and the contributing files and
 generator will not be included in the submitted version of this assignment.  In
 order to modify the database, open a mysql shell session using root credentials.
 Then use the database that is referenced in config.php.  From there, you can run

@@ -4,7 +4,7 @@ require_once ("db.php");
 
 error_reporting(E_ALL & ~E_NOTICE);
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') { 
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // connect, regardless of whether database exists created or not
     $db = new database();
@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $installfile = fopen("csv_to_sql/install.sql", "r") or die("Error: Could not open install.sql");
     $install_sql = fread($installfile, filesize("csv_to_sql/install.sql"));
     if (!$db->execute_multi($install_sql)) {
-        echo "Multi query failed: (" . $db->getError() . ") ";
+        echo "Install failed: (" . $db->getError() . ") ";
     } else {
         echo "Done! You will be redirected shortly...";
     }
