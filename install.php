@@ -21,8 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $db->set_max_packets();
 
     // install all tables
-    $installfile = fopen("csv_to_sql/install.sql", "r") or die("Error: Could not open install.sql");
-    $install_sql = fread($installfile, filesize("csv_to_sql/install.sql"));
+    $installfile = fopen("install.sql", "r") or die("Error: Could not open install.sql");
+    $install_sql = fread($installfile, filesize("install.sql"));
     if (!$db->execute_multi($install_sql)) {
         echo "Install failed: (" . $db->getError() . ") ";
     } else {

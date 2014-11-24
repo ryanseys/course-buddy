@@ -94,7 +94,7 @@ File.open('cses.sql', 'w') { |sql|
 
 all_files = ["init.sql", "courses.sql", "offerings.sql", "cses.sql", "se_tree.sql", "prereqs.sql"]
 
-File.open( "install.sql", "w" ){ |file_out|
+File.open( "../install.sql", "w" ){ |file_out|
   all_files.each { |f_name|
     File.open(f_name){ |f_in|
       f_in.each { |line|

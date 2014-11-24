@@ -1,8 +1,8 @@
 *.project
-csv_to_sql/courses.sql
-csv_to_sql/offerings.sql
-csv_to_sql/cses.sql
-csv_to_sql/install.sql
+sql-generator/courses.sql
+sql-generator/offerings.sql
+sql-generator/cses.sql
+install.sql
 */bin/*
 *.classpath
 */Thumbs.db
