@@ -2,7 +2,7 @@
 require_once 'db.php';
 require_once 'sql.php';
 require_once 'year_standing.php';
-require_once 'prereqs.php';
+require_once 'prereq_helper.php';
 
 $taken_courses = explode(',', $_POST['courses']);
 
@@ -12,13 +12,14 @@ $course_options = array(
   "core" => array(),
   "electives" => array()
 );
+$proposed_courses = array();
 
 $year_standing = getYearStanding($db, $_POST['program'], $taken_courses);
 
 // Find all core courses that we have not taken yet, but have the prereqs for.
 foreach(get_remaining_core_courses_for_offpattern($db, $_POST['program'], $_POST['term'], $taken_courses) as $potential_course) {
   if (course_has_offerings_for_term($db, $_POST['term'], $potential_course->course) &&
-      havePrereqsForCourse($db, $potential_course->course, $taken_courses, $year_standing)) {
+      havePrereqsForCourse($db, $potential_course->course, $taken_courses, $proposed_courses, $year_standing)) {
     if ($course = get_course_by_id($db, $potential_course->course)) {
       array_push($course_options["core"], array(
         "id"   => $course->id,
@@ -26,6 +27,7 @@ foreach(get_remaining_core_courses_for_offpattern($db, $_POST['program'], $_POST
         "code" => $course->code,
         "name" => $course->name
       ));
+      array_push($proposed_courses, $course->id);
     }
   }
 }
@@ -47,7 +49,7 @@ foreach($remaining_elective_groups as $elective_group) {
   $result_course_list = array();
   foreach(get_elective_options_for_group($db, $elective_group, $taken_courses) as $potential_course) {
     if (course_has_offerings_for_term($db, $_POST['term'], $potential_course->course) &&
-      havePrereqsForCourse($db, $potential_course->course, $taken_courses, $year_standing)
+      havePrereqsForCourse($db, $potential_course->course, $taken_courses, $proposed_courses, $year_standing)
     ) {
       if ($course = get_course_by_id($db, $potential_course->course)) {
         array_push($result_course_list, array(
@@ -56,6 +58,7 @@ foreach($remaining_elective_groups as $elective_group) {
           "code" => $course->code,
           "name" => $course->name
         ));
+        array_push($proposed_courses, $course->id);
       }
     }
   }
