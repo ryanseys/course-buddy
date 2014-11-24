@@ -61,7 +61,7 @@ function getPrograms(callback) {
  * @param  {Function} callback    [description]
  * @return {[type]}               [description]
  */
-function getElectives(group_names, term, callback) {
+function getElectives(group_names, term, year, callback) {
   request({
     method: 'get',
     url: 'electives.php',
@@ -69,7 +69,8 @@ function getElectives(group_names, term, callback) {
     urlencode: true,
     data: {
       groups: JSON.stringify(group_names),
-      term: term
+      term: term,
+      year: year
     }
   }, callback);
 }
@@ -472,7 +473,7 @@ function putElectiveHtml() {
   getElectiveGroupNames(getSelectedProgram(), function(group_names) {
 
     // Using group names for this term, get the lists of possible electives for each group
-    getElectives(group_names, getSelectedTerm()["term"], function(elective_groups) {
+    getElectives(group_names, getSelectedTerm()["term"], getSelectedTerm()["year"], function(elective_groups) {
       generateElectiveHtmlForGroups(elective_groups, true);
       getTimetable();
     });
