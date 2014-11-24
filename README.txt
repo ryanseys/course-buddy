@@ -243,9 +243,38 @@ CREATE TABLE course_program_reqs(
 );
 
 For each course that has a year-standing requirement, the requirement is held in
-this table.
+this table.  For each course that the student may take, the PHP will check the
+year-standing required for the course in year_standing.php:getCourseYearStanding.
+If the course does not have a row in the table, it will be assumed that the
+year-standing required is 1.  The PHP will not return any possible courses for
+the user to take unless their own year-standing is greater than or equal to the
+course's required year-standing.  For off-pattern students, the student's
+year-standing is calculated based on the courses that they have taken so far.
+For an on-pattern student, they provide their year-standing when selecting which
+semester to generate timetables for.
 
-<TODO, how these requirements are enforced>
+For course prerequisities that may be taken concurrently with the given course,
+there is a table in the database called prereqs.
+CREATE TABLE prereqs(
+  id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  course int REFERENCES courses(id), -- Course with prereqs
+  prereq int REFERENCES courses(id), -- Must be completed to take course
+  allow_concur boolean NOT NULL,
+  equiv_group int COMMENT 'Assign same id to a group of courses which would
+  satisfy the same prereq'
+);
+
+If the allow_concur attribute is set to true, then the course may be taken
+concurrently with the prerequisite.  In prereq_helper:_satisfies_prereq, the
+function returns true if the student satisfies the prereqs for the proposed
+course.  It also takes prereqs which can be taken concurrently into account.
+
+In order to facilitate program transfer, the prereqs table (shown above), has an
+attribute called equiv_group.  If there are multiple prerequisites that will
+satisfy the requirements for a single course, then each of those prereq rows
+are assigned an equivalent equiv_group attribute.  In the same
+prereq_helper.php:_satisfies_prereq function, it will also consider all of the
+equivalent prerequisites when making this decision.
 
 +------------------------------------------------------------------------------+
 | 8. Explain briefly the rules (or algorithms) you use when building the       |

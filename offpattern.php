@@ -1,6 +1,8 @@
 <?php
 require_once 'db.php';
 require_once 'sql.php';
+require_once 'year_standing.php';
+require_once 'prereq_helper.php';
 
 $taken_courses = explode(',', $_POST['courses']);
 
@@ -10,11 +12,14 @@ $course_options = array(
   "core" => array(),
   "electives" => array()
 );
+$proposed_courses = array();
+
+$year_standing = getYearStanding($db, $_POST['program'], $taken_courses);
 
 // Find all core courses that we have not taken yet, but have the prereqs for.
 foreach(get_remaining_core_courses_for_offpattern($db, $_POST['program'], $_POST['term'], $taken_courses) as $potential_course) {
   if (course_has_offerings_for_term($db, $_POST['term'], $potential_course->course) &&
-      havePrereqsForCourse($db, $potential_course->course, $taken_courses)) {
+      havePrereqsForCourse($db, $potential_course->course, $taken_courses, $proposed_courses, $year_standing)) {
     if ($course = get_course_by_id($db, $potential_course->course)) {
       array_push($course_options["core"], array(
         "id"   => $course->id,
@@ -22,6 +27,7 @@ foreach(get_remaining_core_courses_for_offpattern($db, $_POST['program'], $_POST
         "code" => $course->code,
         "name" => $course->name
       ));
+      array_push($proposed_courses, $course->id);
     }
   }
 }
@@ -43,7 +49,8 @@ foreach($remaining_elective_groups as $elective_group) {
   $result_course_list = array();
   foreach(get_elective_options_for_group($db, $elective_group, $taken_courses) as $potential_course) {
     if (course_has_offerings_for_term($db, $_POST['term'], $potential_course->course) &&
-        havePrereqsForCourse($db, $potential_course->course, $taken_courses)) {
+      havePrereqsForCourse($db, $potential_course->course, $taken_courses, $proposed_courses, $year_standing)
+    ) {
       if ($course = get_course_by_id($db, $potential_course->course)) {
         array_push($result_course_list, array(
           "id"   => $course->id,
@@ -51,6 +58,7 @@ foreach($remaining_elective_groups as $elective_group) {
           "code" => $course->code,
           "name" => $course->name
         ));
+        array_push($proposed_courses, $course->id);
       }
     }
   }
@@ -62,44 +70,4 @@ echo(json_encode(array(
   "next_courses" => $course_options
 )));
 
-function havePrereqsForCourse($db, $course, $taken_courses) {
-  $course = $db->escape_str($course);
-
-  // Check that we have all mandantory rereqs...
-  $prereqs = $db->executeToArray("
-    SELECT prereq FORM prereqs
-    WHERE course='$course' AND equiv_group IS NULL;
-  ");
-  foreach($prereqs as $prereq)
-    if (!in_array($prereq->prereq, $taken_courses))
-      return false;
-
-  // Check that we have at least one of each grouped rereqs...
-  $prereq_groups = $db->executeToArray("
-    SELECT DISTINCT(equiv_group)
-    FROM prereqs
-    WHERE course='$course' and equiv_group IS NOT NULL;
-  ");
-
-  foreach($prereq_groups as $prereq_group) {
-    $prereq_group = $db->escape_str($prereq_group->equiv_group);
-    $prereqs_for_group = $db->executeToArray("
-      SELECT prereq
-      FROM prereqs
-      WHERE course='$course' AND equiv_group='$prereq_group';
-    ");
-
-    $found = false;
-    foreach($prereqs_for_group as $prereq) {
-      if (in_array($prereq->prereq, $taken_courses)) {
-        $found = true;
-        break;
-      }
-    }
-
-    if (!$found) { return false; }
-  }
-
-  return true;
-}
 ?>
