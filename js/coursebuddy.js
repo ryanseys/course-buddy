@@ -91,8 +91,8 @@ function getSelectedTerm() {
   if (term && term.value) {
     term = term.value.split('');
     return {
-      "year": term[1],
-      "term": term[0]
+      year: term[1],
+      term: term[0]
     };
   }
   alert('You must select a term!');
@@ -197,9 +197,9 @@ function getTimetable() {
   }
 
   data.chosen_electives = [];
-  for (var i in electivesToSelect) {
+  for (var j in electivesToSelect) {
     // Ensure that an elective was chosen for each group, and add to array
-    var selected_elective = getSelectedElective(electivesToSelect[i]);
+    var selected_elective = getSelectedElective(electivesToSelect[j]);
     if (selected_elective) {
       if (data.pattern === 'on') {
         data.chosen_electives.push(selected_elective);
@@ -209,7 +209,7 @@ function getTimetable() {
     }
   }
 
-  if(pattern.value === 'off' && courseids.length === 0 && data.chosen_electives.length === 0) {
+  if (pattern.value === 'off' && courseids.length === 0 && data.chosen_electives.length === 0) {
     hide(timetable);
     hide(cal);
     hide(timetable_selection);
@@ -226,31 +226,31 @@ function getTimetable() {
     data: data,
     json: true
   }, function(resp) {
-    allTimetables = generateAll(resp);
+      allTimetables = generateAll(resp);
 
-    if(allTimetables.length !== 0) {
-      currentTimetable = 0;
-      renderCalendar(allTimetables[currentTimetable]);
-      timetable.innerHTML = 'Showing timetable ' + (currentTimetable + 1) + ' of ' + allTimetables.length + ' found.';
-      show(enroll_button, 'inline');
-      show(cal);
-      show(timetable);
-      show(timetable_selection);
-    } else {
-      hide(cal);
-      currentTimetable = null;
-      var msg = '<div class="notimesmessage"><b>';
-      msg += 'Sorry, there were no timetables found. ';
-      msg += 'Every possibility resulted in conflicts. ';
-      if(data.pattern === 'on') {
-        msg += '<br>Try using the off-pattern tool for more granual control.';
+      if (allTimetables.length !== 0) {
+        currentTimetable = 0;
+        renderCalendar(allTimetables[currentTimetable]);
+        timetable.innerHTML = 'Showing timetable ' + (currentTimetable + 1) + ' of ' + allTimetables.length + ' found.';
+        show(enroll_button, 'inline');
+        show(cal);
+        show(timetable);
+        show(timetable_selection);
       } else {
-        msg += '<br>Try selecting less courses to reduce conflicts.';
+        hide(cal);
+        currentTimetable = null;
+        var msg = '<div class="notimesmessage"><b>';
+        msg += 'Sorry, there were no timetables found. ';
+        msg += 'Every possibility resulted in conflicts. ';
+        if (data.pattern === 'on') {
+          msg += '<br>Try using the off-pattern tool for more granual control.';
+        } else {
+          msg += '<br>Try selecting less courses to reduce conflicts.';
+        }
+        msg += '</b></div>';
+        timetable.innerHTML = msg;
       }
-      msg += '</b></div>';
-      timetable.innerHTML = msg;
-    }
-  });
+    });
 
   return false;
 }
@@ -297,11 +297,11 @@ function setOffPattern() {
   hide(term_selection);
 
   getCourses(getSelectedProgram(), function(courses) {
-    genCourseSelectionList(courses, progCoreCourses)
+    genCourseSelectionList(courses, progCoreCourses);
   });
 
   getAllElectives(getSelectedProgram(), function(courses) {
-    genCourseSelectionList(courses, progElectiveCourses)
+    genCourseSelectionList(courses, progElectiveCourses);
   });
 
   show(class_selection);
@@ -333,25 +333,25 @@ function getNextClasses() {
       program: getSelectedProgram()
     }
   }, function(result) {
-    core_courses = result.next_courses.core
-    offpattern_el = document.getElementById('offpatternCoreCourseOptions');
-    var table_html = "<table class='coursetable'>";
+      core_courses = result.next_courses.core;
+      offpattern_el = document.getElementById('offpatternCoreCourseOptions');
+      var table_html = "<table class='coursetable'>";
 
-    for (i = 0; i < core_courses.length; i++) {
-      var course = core_courses[i];
-      var label_html = course.dept + ' ' + course.code + ' ' + course.name;
-      table_html += "<tr>";
-      table_html += "<td><input type='checkbox' id='" + course.id + "' name='offpatternCoreCourse' onchange='getTimetable()' value='" + course.id + "'/></td>";
-      table_html += "<td><label for='" + course.id + "'>" + label_html + "</label></td></tr>";
-    }
+      for (i = 0; i < core_courses.length; i++) {
+        var course = core_courses[i];
+        var label_html = course.dept + ' ' + course.code + ' ' + course.name;
+        table_html += '<tr>';
+        table_html += '<td><input type="checkbox" id="' + course.id + '" name="offpatternCoreCourse" onchange="getTimetable()" value="' + course.id + '"/></td>';
+        table_html += '<td><label for="' + course.id + '">' + label_html + '</label></td></tr>';
+      }
 
-    table_html += '</table>';
-    offpattern_el.innerHTML = table_html;
-    generateElectiveHtmlForGroups(result.next_courses.electives, true);
+      table_html += '</table>';
+      offpattern_el.innerHTML = table_html;
+      generateElectiveHtmlForGroups(result.next_courses.electives, true);
 
-    show(offpattern_class_selection, 'block');
-    show(elective_selection, 'block');
-  });
+      show(offpattern_class_selection, 'block');
+      show(elective_selection, 'block');
+    });
 }
 
 /**
@@ -376,7 +376,7 @@ function getClasses(offerings) {
     courseBucketArray.push(courseBucket[courseBucketKeys[j]]);
   }
   return courseBucketArray;
-};
+}
 
 /**
  * Get the times for a course
@@ -419,18 +419,18 @@ function doesNotConflict(course, otherCourses) {
     }
 
     // check if id's match to compare sections
-    if(course.course === otherCourse.course) {
+    if (course.course === otherCourse.course) {
       var cSeq = course.seq.charAt(0);
       var otherSeq = otherCourse.seq.charAt(0);
-      if(cSeq === otherSeq) {
-        // do nothing, they match!
-      } else if((course.type === 'PAS' && cSeq === 'P') || (otherCourse.type === 'PAS' && otherSeq === 'P')) {
-        // do nothing, PAS with P are good for any lecture section
-      } else if((course.type === 'LAB' && cSeq === 'L') || (otherCourse.type === 'LAB' && otherSeq === 'L')) {
-        // do nothing, LAB with L are good for any lecture section
-      } else if((course.type === 'TUT' && cSeq === 'T') || (otherCourse.type === 'TUT' && otherSeq === 'T')) {
-        // do nothing, TUT with T are good for any lecture section
-      } else if(cSeq !== otherSeq) {
+      if (cSeq === otherSeq) {
+      // do nothing, they match!
+      } else if ((course.type === 'PAS' && cSeq === 'P') || (otherCourse.type === 'PAS' && otherSeq === 'P')) {
+      // do nothing, PAS with P are good for any lecture section
+      } else if ((course.type === 'LAB' && cSeq === 'L') || (otherCourse.type === 'LAB' && otherSeq === 'L')) {
+      // do nothing, LAB with L are good for any lecture section
+      } else if ((course.type === 'TUT' && cSeq === 'T') || (otherCourse.type === 'TUT' && otherSeq === 'T')) {
+      // do nothing, TUT with T are good for any lecture section
+      } else if (cSeq !== otherSeq) {
         return false; // the course must have the same section
       }
     }
@@ -461,7 +461,7 @@ function doesNotConflict(course, otherCourses) {
   }
 
   return true;
-};
+}
 
 /**
  * Create the elective list HTML and put it in the page.
@@ -470,13 +470,15 @@ function putElectiveHtml() {
   // Get names of current elective group
   var current_groups = [];
 
-  if (getSelectedTerm() === null) { return; }
+  if (getSelectedTerm() === null) {
+    return;
+  }
 
   // Get the names of the elective groups for this program for this term
   getElectiveGroupNames(getSelectedProgram(), function(group_names) {
 
     // Using group names for this term, get the lists of possible electives for each group
-    getElectives(group_names, getSelectedTerm()["term"], function(elective_groups) {
+    getElectives(group_names, getSelectedTerm()['term'], function(elective_groups) {
       generateElectiveHtmlForGroups(elective_groups, true);
       getTimetable();
     });
@@ -493,7 +495,7 @@ function generateElectiveHtmlForGroups(elective_groups, includeAutoGenerate) {
     var electives = elective_group.electives;
     var group_name = elective_group.req_group;
     while (electivesToSelect.indexOf(group_name) != -1) {
-      group_name += "_";
+      group_name += '_';
     }
     electivesToSelect.push(group_name);
 
@@ -518,7 +520,7 @@ function generateElectiveHtmlForGroups(elective_groups, includeAutoGenerate) {
   if (electives_html) {
     electives_div.innerHTML = '<h2>Select your electives</h2>' + electives_html;
   } else {
-    electives_div.innerHTML = "<h2>You have no electives to select for this term.</h2>";
+    electives_div.innerHTML = '<h2>You have no electives to select for this term.</h2>';
   }
 }
 
@@ -529,7 +531,7 @@ function generateElectiveHtmlForGroups(elective_groups, includeAutoGenerate) {
  */
 function getElectiveGroupNames(program_id, callback) {
   var SelectedTerm = getSelectedTerm();
-  if (SelectedTerm != null) {
+  if (SelectedTerm !== null) {
     request({
       method: 'get',
       url: 'electives.php',
@@ -567,7 +569,7 @@ function generateTimetable(classes, indexes) {
     timetable.push(offer);
   }
   return timetable;
-};
+}
 
 /**
  * Checks whether a timetable is conflict free, that is,
@@ -589,7 +591,7 @@ function isConflictFree(timetable) {
     count++;
   }
   return true;
-};
+}
 
 /**
  * Increase the indexes of which courses to pick from the set of
@@ -624,7 +626,9 @@ function generateAll(offerings) {
   var aTimetable = [];
   var indexes = [];
   var classes = getClasses(offerings);
-  if (classes.length == 0) { return []; }
+  if (classes.length === 0) {
+    return [];
+  }
 
   for (var i = 0; i < classes.length; i++) {
     indexes.push([0, classes[i].length]);
@@ -637,7 +641,7 @@ function generateAll(offerings) {
     if (isConflictFree(tt)) {
       // cut out duplicates
       var ttString = JSON.stringify(tt);
-      if(!timetableStrings[ttString]) {
+      if (!timetableStrings[ttString]) {
         timetableStrings[ttString] = true;
         // add timetable to found timetables
         timetables.push(tt);
@@ -646,7 +650,7 @@ function generateAll(offerings) {
   }
 
   return timetables;
-};
+}
 
 /**
  * Gets the selected elective for the elective group with the given name
@@ -681,12 +685,12 @@ function generateCalendar() {
     tr.appendChild(td);
   }
   cal.appendChild(tr);
-  for(var i = 0; i < 29; i++) {
+  for (var j = 0; j < 29; j++) {
     tr = document.createElement('tr');
     td = document.createElement('td');
     td.innerHTML = time;
     tr.appendChild(td);
-    for(var j = 0; j < 5; j++) {
+    for (var k = 0; k < 5; k++) {
       td = document.createElement('td');
       tr.appendChild(td);
     }
@@ -703,7 +707,7 @@ function generateCalendar() {
     var hour = parseInt(t[0]);
     var min = parseInt(t[1]);
     min += 30;
-    if(min == 60) {
+    if (min == 60) {
       min = 0;
       hour += 1;
     }
@@ -721,7 +725,7 @@ function renderCalendar(tt) {
   generateCalendar();
 
   // for each offering in the timetable
-  for(var i = 0; i < tt.length; i++) {
+  for (var i = 0; i < tt.length; i++) {
     var offer = tt[i];
     var offer_start = offer.time_start;
     var offer_end = offer.time_end;
@@ -730,7 +734,7 @@ function renderCalendar(tt) {
     var row_end = calcRowIndexForTime(offer_end);
 
     // for every day that the offering occurs
-    for(var j = 0; j < days.length; j++) {
+    for (var j = 0; j < days.length; j++) {
       var day = days[j];
       var colIndex = calcColIndexForDay(day);
       cal.rows[row_start].cells[colIndex].rowSpan = (row_end - row_start) + 1;
@@ -740,7 +744,7 @@ function renderCalendar(tt) {
       cal.rows[row_start].cells[colIndex].className = 'timetableCourse';
 
       // hide cells that are overridden by the long offer in the timetable
-      for(var rowIndex = row_start + 1; rowIndex <= row_end; rowIndex++) {
+      for (var rowIndex = row_start + 1; rowIndex <= row_end; rowIndex++) {
         hide(cal.rows[rowIndex].cells[colIndex]);
       }
     }
@@ -760,12 +764,18 @@ function renderCalendar(tt) {
   }
 
   /**
-   * Calculate the col index given the time
-   * @param  {string} time time to calculate
+   * Calculate the col index given the day
+   * @param  {string} day  day to calc
    * @return {number}      col index for calendar
    */
   function calcColIndexForDay(day) {
-    return { M: 1, T: 2, W: 3, R: 4, F: 5 }[day];
+    return {
+      M: 1,
+      T: 2,
+      W: 3,
+      R: 4,
+      F: 5
+    }[day];
   }
 }
 
@@ -785,7 +795,7 @@ function nextTimetable() {
  */
 function prevTimetable() {
   currentTimetable -= 1;
-  if(currentTimetable < 0) {
+  if (currentTimetable < 0) {
     currentTimetable = allTimetables.length - 1;
   }
   renderCalendar(allTimetables[currentTimetable]);

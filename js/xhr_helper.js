@@ -10,7 +10,7 @@ function _querystring(obj) {
   obj = obj || {};
   var str = '';
   var keys = Object.keys(obj);
-  for(var i = 0; i < keys.length; i++) {
+  for (var i = 0; i < keys.length; i++) {
     var key = keys[i];
     var value = obj[key];
     if (value) {
@@ -31,24 +31,25 @@ function request(options, callback) {
   var j = !!options.json;
 
   req.open(method, url, true);
-  if (options.urlencode)
-    req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+  if (options.urlencode) {
+    req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  }
   req.onload = function() {
     callback(j ? _parse_response(this) : this.responseText);
   };
 
-  if(method === 'post') {
+  if (method === 'post') {
     req.send(qs);
   } else {
     req.send();
   }
 }
 
-function _parse_response(resp){
- var jdata = [];
+function _parse_response(resp) {
+  var jdata = [];
   try {
     jdata = JSON.parse(resp.responseText);
-  } catch(e) {
+  } catch (e) {
     console.log(e, ' Could not parse as JSON: ' + resp.responseText);
   }
   return jdata;
