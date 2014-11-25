@@ -229,7 +229,7 @@ INSERT INTO prereqs (course, prereq, allow_concur) VALUES ((SELECT id from COURS
 
 -- Y2 TF
 INSERT INTO prereqs (course, prereq, allow_concur) VALUES ((SELECT id from COURSES WHERE dept="MATH" AND code=2004), (SELECT id from COURSES WHERE dept="MATH" AND code=1005), FALSE);
-INSERT INTO prereqs (course, prereq, allow_concur) VALUES ((SELECT id from COURSES WHERE dept="MATH" AND code=1004), (SELECT id from COURSES WHERE dept="MATH" AND code=1104), FALSE);
+INSERT INTO prereqs (course, prereq, allow_concur) VALUES ((SELECT id from COURSES WHERE dept="MATH" AND code=2004), (SELECT id from COURSES WHERE dept="MATH" AND code=1104), FALSE);
 INSERT INTO prereqs (course, prereq, allow_concur) VALUES ((SELECT id from COURSES WHERE dept="ELEC" AND code=2501), (SELECT id from COURSES WHERE dept="MATH" AND code=1005), FALSE);
 INSERT INTO prereqs (course, prereq, allow_concur) VALUES ((SELECT id from COURSES WHERE dept="ELEC" AND code=2501), (SELECT id from COURSES WHERE dept="PHYS" AND code=1004), FALSE);
 INSERT INTO prereqs (course, prereq, allow_concur) VALUES ((SELECT id from COURSES WHERE dept="SYSC" AND code=2004), (SELECT id from COURSES WHERE dept="SYSC" AND code=2006), TRUE);
