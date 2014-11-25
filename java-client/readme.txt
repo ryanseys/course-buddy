@@ -11,14 +11,18 @@ other communication with the server, as per the View 1 specifications.
 Instructions to Run
 ###################
 
-1. Ensure that JDK 7 or better is available on your machine
-   (this is the minimum reccomended version by Oracle, and required by the syntax version used)
-2. Verify server Apache HOST and PORT in src/models/Constants.java
-3. Add the java-client/src directory, and java-client/lib/gson.jar to your classpath.
-4. Compile and run java-client/src/Client.java
+-Ensure that the CourseBuddy Server is running
 
-#####
-Notes
-#####
+-Ensure that JDK 7 or better is available on your machine
+(this is the minimum recommended version by Oracle, and required by the syntax version used)
 
-- This was built and run with Eclipse IDE.  Recommend that you do so, too.
+To Run JAR:
+- The JAR file uses the default Apache host and port
+- Double-click java-client/View1.jar
+
+To Build:
+- Recommended that you use Eclipse (no gradle build script is included)
+
+1. Verify server Apache HOST and PORT in java-client/src/models/Constants.java
+2. Add the java-client/src directory, and java-client/lib/gson.jar to your classpath.
+3. Compile and run java-client/src/Client.java
