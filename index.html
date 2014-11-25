@@ -23,14 +23,14 @@
 
     <div id='class_selection' class="selectclasses" style="display:none;">
       <h2>Which term do you want to generate a timetable for?</h2>
-      <input id="termf" type="radio" name="offpattern_term" value="F" checked /><label for="termf">Fall Term</label>
-      <input id="termw" type="radio" name="offpattern_term" value="W" /><label for="termw">Winter Term</label>
+      <input id="termf" type="radio" name="offpattern_term" onclick="getNextClasses()" value="F" checked /><label for="termf">Fall Term</label>
+      <input id="termw" type="radio" name="offpattern_term" onclick="getNextClasses()" value="W" /><label for="termw">Winter Term</label>
 
       <h2>What year standing are you?</h2>
-      <input id="year1" type="radio" name="yearstanding" onchange="getNextClasses()" value="1" checked /><label for="year1">Year 1</label>
-      <input id="year2" type="radio" name="yearstanding" onchange="getNextClasses()" value="2" /><label for="year2">Year 2</label>
-      <input id="year3" type="radio" name="yearstanding" onchange="getNextClasses()" value="3" /><label for="year3">Year 3</label>
-      <input id="year4" type="radio" name="yearstanding" onchange="getNextClasses()" value="4" /><label for="year4">Year 4</label>
+      <input id="year1" type="radio" name="yearstanding" onclick="getNextClasses()" value="1" checked /><label for="year1">Year 1</label>
+      <input id="year2" type="radio" name="yearstanding" onclick="getNextClasses()" value="2" /><label for="year2">Year 2</label>
+      <input id="year3" type="radio" name="yearstanding" onclick="getNextClasses()" value="3" /><label for="year3">Year 3</label>
+      <input id="year4" type="radio" name="yearstanding" onclick="getNextClasses()" value="4" /><label for="year4">Year 4</label>
       <div style='padding-top:5px;'>
         <small>Why can't we calculate this automatically? See <a target="_blank" href="http://carleton.ca/sasc/advisingcentre/audit/reading-your-audit/year-standing/">here.</a></small>
       </div>
