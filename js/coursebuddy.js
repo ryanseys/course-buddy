@@ -37,6 +37,10 @@ function show(el, style) {
  * Check for electives, showing them if available.
  */
 function checkForElectives() {
+
+  timetable.innerHTML = '<br><b>Fetching electives...</b><br>';
+  show(timetable_selection);
+  show(timetable);
   clear_confirmation();
   putElectiveHtml();
   show(elective_selection);
@@ -476,9 +480,8 @@ function putElectiveHtml() {
 
   // Get the names of the elective groups for this program for this term
   getElectiveGroupNames(getSelectedProgram(), function(group_names) {
-
     // Using group names for this term, get the lists of possible electives for each group
-    getElectives(group_names, getSelectedTerm()['term'], function(elective_groups) {
+    getElectives(group_names, getSelectedTerm().term, function(elective_groups) {
       generateElectiveHtmlForGroups(elective_groups, true);
       getTimetable();
     });
