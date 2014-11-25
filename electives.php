@@ -35,7 +35,7 @@ $db->close();
 
 function get_elective_groups($db, $program_id){
     $program_id = $db->escape_str($program_id);
-    $res = get_program_electives($db, $program_id);
+    $res = get_program_electives($db, $program_id, null);
     return $res;
 }
 

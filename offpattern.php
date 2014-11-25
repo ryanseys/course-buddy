@@ -12,7 +12,7 @@ $course_options = array(
 );
 
 // Find all core courses that we have not taken yet, but have the prereqs for.
-foreach(get_remaining_core_courses_for_offpattern($db, $_POST['program'], $_POST['term'], $taken_courses) as $potential_course) {
+foreach(get_remaining_core_courses_for_offpattern($db, $_POST['program'], $_POST['term'], $taken_courses, $_POST['yearstanding']) as $potential_course) {
   if (course_has_offerings_for_term($db, $_POST['term'], $potential_course->course) &&
       havePrereqsForCourse($db, $potential_course->course, $taken_courses)) {
     if ($course = get_course_by_id($db, $potential_course->course)) {
@@ -28,7 +28,7 @@ foreach(get_remaining_core_courses_for_offpattern($db, $_POST['program'], $_POST
 
 // Find all the elective groups that we have not yet completed.
 $taken_course_pool = $taken_courses;
-$potential_elective_groups = get_program_electives($db, $_POST['program']);
+$potential_elective_groups = get_program_electives($db, $_POST['program'], $_POST['yearstanding']);
 $remaining_elective_groups = array();
 foreach($potential_elective_groups as $potential_elective_group) {
   if ($applied_course = has_completed_course_in_elective_group($db, $potential_elective_group->req_group, $taken_course_pool)) {
@@ -70,9 +70,11 @@ function havePrereqsForCourse($db, $course, $taken_courses) {
     SELECT prereq FORM prereqs
     WHERE course='$course' AND equiv_group IS NULL;
   ");
-  foreach($prereqs as $prereq)
-    if (!in_array($prereq->prereq, $taken_courses))
+  foreach($prereqs as $prereq){
+    if (!in_array($prereq->prereq, $taken_courses)){
       return false;
+    }
+  }
 
   // Check that we have at least one of each grouped rereqs...
   $prereq_groups = $db->executeToArray("

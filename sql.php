@@ -1,7 +1,12 @@
 <?php
 
-function get_program_electives($db, $program_id) {
-    return $db->executeToArray("SELECT * FROM program_elective_groups WHERE program=$program_id");
+function get_program_electives($db, $program_id, $year) {
+    if($year !== null) {
+      $year = $db->escape_str($year);
+    } else {
+      $year = 5; // show all electives
+    }
+    return $db->executeToArray("SELECT * FROM program_elective_groups WHERE program=$program_id AND year <= '$year'");
 }
 
 function get_all_programs($db) {
@@ -52,14 +57,15 @@ function get_offerings_of_courses($db, $term, $courses) {
   return $db->executeToArray($sql);
 }
 
-function get_remaining_core_courses_for_offpattern($db, $program, $next_term, $taken_courses) {
+function get_remaining_core_courses_for_offpattern($db, $program, $next_term, $taken_courses, $yearstanding) {
   $program = $db->escape_str($program);
   $term = $db->escape_str($next_term);
+  $year = $db->escape_str($yearstanding);
   $sql_course_list = gen_sql_list($taken_courses);
   return $db->executeToArray("
     SELECT course
     FROM program_reqs
-    WHERE program='$program' AND term='$term' AND course NOT IN ($sql_course_list);
+    WHERE program='$program' AND term='$term' AND year <= '$year' AND course NOT IN ($sql_course_list);
   ");
 }
 

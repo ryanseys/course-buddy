@@ -295,14 +295,17 @@ function setOffPattern() {
   hide(timetable);
   hide(enroll_button);
   hide(term_selection);
+
   getCourses(getSelectedProgram(), function(courses) {
     genCourseSelectionList(courses, progCoreCourses)
   });
+
   getAllElectives(getSelectedProgram(), function(courses) {
     genCourseSelectionList(courses, progElectiveCourses)
   });
 
   show(class_selection);
+  getNextClasses();
 }
 
 /**
@@ -312,7 +315,7 @@ function setOffPattern() {
  */
 function getNextClasses() {
   clear_confirmation();
-  selected_classes = [];
+  var selected_classes = [];
   selected_class_inputs = document.querySelectorAll("input[name='course']:checked");
   for (i = 0; i < selected_class_inputs.length; i++) {
     selected_classes.push(selected_class_inputs[i].value);
@@ -326,6 +329,7 @@ function getNextClasses() {
     data: {
       courses: selected_classes,
       term: document.querySelector("input[name='offpattern_term']:checked").value,
+      yearstanding: document.querySelector("input[name='yearstanding']:checked").value,
       program: getSelectedProgram()
     }
   }, function(result) {
