@@ -8,7 +8,7 @@ class database {
         // Hide warnings just for initial connection
         // If the database doesn't exist yet, a warning will be thrown,
         // but we are actually okay with this and will create it later.
-        error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
+        error_reporting(E_ALL &~E_NOTICE &~E_WARNING);
 
         // first attempt to connect directly to mysql + database
         $this->conn = new mysqli($host, $user, $pass, $dbname, $port);
@@ -20,7 +20,7 @@ class database {
             }
         }
 
-        error_reporting(E_ALL & ~E_NOTICE);
+        error_reporting(E_ALL &~E_NOTICE);
     }
 
     function execute($sql) {
@@ -58,16 +58,16 @@ class database {
     }
 
     function execute_multi($sql) {
-        if ($this->conn->multi_query($sql))
-        {
+        if ($this->conn->multi_query($sql)) {
             do {
-                if ($result = $this->conn->store_result())
+                if ($result = $this->conn->store_result()) {
                     $result->free();
+                }
             } while ($this->conn->more_results() && $this->conn->next_result());
             return true;
-        }
-        else
+        } else {
             return false;
+        }
     }
 
     function executeToArray($sql) {
