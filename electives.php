@@ -33,13 +33,13 @@ if ($program_id){
 
 $db->close();
 
-function get_elective_groups($db, $program_id){
+function get_elective_groups($db, $program_id) {
     $program_id = $db->escape_str($program_id);
     $res = get_program_electives($db, $program_id, null);
     return $res;
 }
 
-function get_electives($db, $term, $group_name){
+function get_electives($db, $term, $group_name) {
     $group_name = $db->escape_str($group_name);
     $res = $db->executeToArray(
         "SELECT DISTINCT(c.id), c.dept, c.code, c.name
