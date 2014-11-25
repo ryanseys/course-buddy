@@ -14,14 +14,14 @@ Instructions to Run
 -Ensure that the CourseBuddy Server is running
 
 -Ensure that JDK 7 or better is available on your machine
-(this is the minimum reccomended version by Oracle, and required by the syntax version used)
+(this is the minimum recommended version by Oracle, and required by the syntax version used)
 
 To Run JAR:
 - The JAR file uses the default Apache host and port
 - Double-click java-client/View1.jar
 
 To Build:
-- Reccomended that you use Eclipse (no gradle build script is included)
+- Recommended that you use Eclipse (no gradle build script is included)
 
 1. Verify server Apache HOST and PORT in java-client/src/models/Constants.java
 2. Add the java-client/src directory, and java-client/lib/gson.jar to your classpath.
