@@ -1,9 +1,9 @@
 <?php
 
-require_once ("db.php");
-require_once ("http_args.php");
-require_once ("json_responses.php");
-require_once ("sql.php");
+require_once "db.php";
+require_once "http_args.php";
+require_once "json_responses.php";
+require_once "sql.php";
 
 $db = new database();
 
@@ -13,17 +13,17 @@ $group_name = get_arg("group");
 $display_all = get_arg("all");
 $term = ucfirst(get_arg("term"));
 
-if ($program_id){
+if ($program_id) {
     if ($display_all == "true") {
         echo json_encode(get_all_electives($db, $program_id));
     } else {
         echo json_encode(get_elective_groups($db, $program_id));
     }
-} else if ($group_name){
+} else if ($group_name) {
     echo json_encode(get_electives($db, $group_name));
-} else if ($group_names){
+} else if ($group_names) {
     $results = array();
-    foreach(json_decode($group_names) as $group_name){
+    foreach (json_decode($group_names) as $group_name) {
         array_push($results, ['req_group' => $group_name, 'electives' => get_electives($db, $term, $group_name)]);
     }
     echo json_encode($results);

@@ -1,9 +1,9 @@
 <?php
 
-require_once ('db.php');
-require_once ('http_args.php');
-require_once ("json_responses.php");
-require_once ("sql.php");
+require_once 'db.php';
+require_once 'http_args.php';
+require_once "json_responses.php";
+require_once "sql.php";
 
 $db = new database();
 

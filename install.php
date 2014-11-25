@@ -1,8 +1,8 @@
 <?php
 
-require_once ("db.php");
+require_once "db.php";
 
-error_reporting(E_ALL & ~E_NOTICE);
+error_reporting(E_ALL &~E_NOTICE);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 

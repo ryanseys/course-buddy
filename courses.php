@@ -1,7 +1,7 @@
 <?php
 
-require_once ("db.php");
-require_once ("http_args.php");
+require_once "db.php";
+require_once "http_args.php";
 
 $db = new database();
 
@@ -11,7 +11,7 @@ $dept_name = get_arg("dept");
 
 if ($course_id !== null) {
     $course_id = $db->escape_str($course_id);
-    $courses_sql = "SELECT * FROM  courses WHERE id=$course_id LIMIT 1;";// select course by id
+    $courses_sql = "SELECT * FROM courses WHERE id=$course_id LIMIT 1;";// select course by id
 } elseif ($program_id !== null) {
     $program_id = $db->escape_str($program_id);
     $courses_sql = "SELECT * FROM courses WHERE id in (SELECT course FROM program_reqs WHERE program =$program_id);";// select courses by program id
