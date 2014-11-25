@@ -245,7 +245,21 @@ CREATE TABLE course_program_reqs(
 For each course that has a year-standing requirement, the requirement is held in
 this table.
 
-<TODO, how these requirements are enforced>
+When doing the off-pattern scheduling, we take into consideration the year-
+standing status that the student will provide for us. This year-standing status
+cannot be calculated automatically from the courses they say they have taken
+because Engineering has a complicated way of calculating your year standing.
+http://carleton.ca/sasc/advisingcentre/audit/reading-your-audit/year-standing/
+explains more details about this. From the year-standing we are able to offer
+the students a list of courses that they can taken given the courses that they
+have said they have taken already. Concurrent prerequisites are calculated using
+an allow_concur value in the database, which specifies whether the course can
+be taken at the same time as its prerequisite. Our software only supports
+Software Engineering so no other programs or their program transfers are taken
+into consideration. According to the rubric provided for this project, program
+transfers are not required to be taken into consideration. Overall, of the cases
+described in the project requirements, most or all are taken into consideration
+in our PHP (server-side) code and our JavaScript (client-side) code.
 
 +------------------------------------------------------------------------------+
 | 8. Explain briefly the rules (or algorithms) you use when building the       |
